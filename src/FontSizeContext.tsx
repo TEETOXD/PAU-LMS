@@ -21,7 +21,7 @@ export function FontSizeProvider({ children }: { children: ReactNode }) {
     // Set the root font-size
     if (size === 'small') html.style.fontSize = '16px';
     if (size === 'normal') html.style.fontSize = '18px';
-    if (size === 'large') html.style.fontSize = '20px';
+    if (size === 'large') html.style.fontSize = '22px';
   };
   
   return (

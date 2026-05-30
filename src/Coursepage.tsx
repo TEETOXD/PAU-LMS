@@ -7,7 +7,7 @@ import darkLogo from './assets/Approved Standard Logo - Dark.png';
 
 const C = {
   navy: "#1a2a5e", navyDark: "#111d45", gold: "#c8a84b",
-  blue1: "#3b9edb", blue2: "#7bbce8", pink: "#e05c8a",
+  blue1: "#3b9edb", blue2: "#ffffff", pink: "#e05c8a",
   teal: "#4ec9c9", yellow: "#f0b429", gray: "#f2f2ef",
   border: "#e0e0d8", text: "#333", muted: "#888",
   green: "#27ae60", white: "#fff",
@@ -162,7 +162,7 @@ function CollapsibleWeek({ week, themeStyles, isExpanded, onToggle }: { week: We
   return (
     <div style={{ marginBottom: "0.375rem", border: `1px solid ${themeStyles.border}`, borderRadius: "0.375rem", overflow: "hidden" }}>
       <button onClick={onToggle}
-        style={{ width: "100%", padding: "0.7rem 1rem", background: themeStyles.surface, border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: "0.6rem", fontSize: "0.9rem", fontWeight: 600, color: themeStyles.primaryText, textAlign: "left", fontFamily: "inherit" }}
+        style={{ width: "100%", padding: "1.1rem 1rem", background: themeStyles.surface, border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: "0.6rem", fontSize: "0.9rem", fontWeight: 600, color: themeStyles.primaryText, textAlign: "left", fontFamily: "inherit" }}
         onMouseEnter={e => (e.currentTarget.style.background = themeStyles.border)}
         onMouseLeave={e => (e.currentTarget.style.background = themeStyles.surface)}>
         <span style={{ fontSize: "0.65rem", color: themeStyles.secondaryText, width: "0.75rem", flexShrink: 0, display: "inline-block" }}>
@@ -174,7 +174,7 @@ function CollapsibleWeek({ week, themeStyles, isExpanded, onToggle }: { week: We
         <div style={{ background: themeStyles.background, borderTop: `1px solid ${themeStyles.border}` }}>
           {week.items.map((item, idx) => (
             <div key={idx}
-              style={{ display: "flex", alignItems: "center", gap: "0.75rem", padding: "0.65rem 1rem 0.65rem 2.25rem", borderBottom: idx < week.items.length - 1 ? `1px solid ${themeStyles.border}` : "none", cursor: "pointer" }}
+              style={{ display: "flex", alignItems: "center", gap: "0.75rem", padding: "0.95rem 1rem 0.95rem 2.25rem", borderBottom: idx < week.items.length - 1 ? `1px solid ${themeStyles.border}` : "none", cursor: "pointer" }}
               onMouseEnter={e => (e.currentTarget.style.background = "rgba(26,42,94,0.04)")}
               onMouseLeave={e => (e.currentTarget.style.background = "transparent")}>
               <ItemIcon type={item.type} color={iconColor} />
@@ -288,8 +288,8 @@ export default function CoursePage() {
           </div>
 
           {/* ── Scrollable content area ── */}
-          <div style={{ flex: 1, overflowY: "auto" }}>
-          <div style={{ padding: "2rem 6rem 4rem" }}>
+          <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column" }}>
+          <div style={{ padding: "2rem 8rem 4rem", maxWidth: "75rem", margin: "0 auto", width: "100%", flex: 1, display: "flex", flexDirection: "column" }}>
 
         {/* Course title */}
         <h1 style={{ fontSize: "1.625rem", fontWeight: 800, margin: "0 0 1rem", color: themeStyles.primaryText }}>
@@ -329,7 +329,7 @@ export default function CoursePage() {
               </button>
               {generalExpanded && (
                 <div style={{ background: themeStyles.background, borderTop: `1px solid ${themeStyles.border}` }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", padding: "0.65rem 1rem 0.65rem 2.25rem", cursor: "pointer" }}
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", padding: "0.95rem 1rem 0.95rem 2.25rem", cursor: "pointer" }}
                     onMouseEnter={e => (e.currentTarget.style.background = "rgba(26,42,94,0.04)")}
                     onMouseLeave={e => (e.currentTarget.style.background = "transparent")}>
                     <MegaphoneIcon color={themeStyles.primaryText === "#FFFFFF" ? C.blue2 : C.navy} />
@@ -352,10 +352,10 @@ export default function CoursePage() {
           </div>
         )}
 
-        {activeTab === "participants"  && <div style={{ color: themeStyles.secondaryText, padding: "2rem 0" }}><p>Participants coming soon...</p></div>}
-        {activeTab === "grades"        && <div style={{ color: themeStyles.secondaryText, padding: "2rem 0" }}><p>Grades coming soon...</p></div>}
-        {activeTab === "competencies"  && <div style={{ color: themeStyles.secondaryText, padding: "2rem 0" }}><p>Competencies coming soon...</p></div>}
-        {activeTab === "more"          && <div style={{ color: themeStyles.secondaryText, padding: "2rem 0" }}><p>More options coming soon...</p></div>}
+        {activeTab === "participants"  && <div style={{ flex: 1, color: themeStyles.secondaryText, padding: "2rem 0" }}><p>Participants coming soon...</p></div>}
+        {activeTab === "grades"        && <div style={{ flex: 1, color: themeStyles.secondaryText, padding: "2rem 0" }}><p>Grades coming soon...</p></div>}
+        {activeTab === "competencies"  && <div style={{ flex: 1, color: themeStyles.secondaryText, padding: "2rem 0" }}><p>Competencies coming soon...</p></div>}
+        {activeTab === "more"          && <div style={{ flex: 1, color: themeStyles.secondaryText, padding: "2rem 0" }}><p>More options coming soon...</p></div>}
       </div>{/* end inner padding div */}
 
       {/* ── Footer ── */}
@@ -386,7 +386,7 @@ export default function CoursePage() {
           </div>
         </div>
       </footer>
-      <div style={{ background: C.navyDark, color: "#888", textAlign: "center", padding: "0.75rem", fontSize: "0.78125rem", borderTop: "0.0625rem solid rgba(255,255,255,0.07)" }}>
+      <div style={{ background: C.navyDark, color:"#fff", textAlign:"center", padding:"0.75rem", fontSize:"0.78125rem", borderTop:"0.0625rem solid rgba(255,255,255,0.07)" }}>
         Copyright © 2026 – Developed by PAU ICT and Toluwanimi Adeyemo. Powered by Moodle
       </div>
       </div>{/* end overflowY scroll div */}

@@ -12,7 +12,7 @@ import courseimage5 from './assets/course5.png';
 import courseimage6 from './assets/course6.png';
 
 const C = {
-  navy: "#1a2a5e", navyDark: "#111d45", gold: "#c8a84b",
+  navy: "#1a2a5e", navyDark: "#000000", gold: "#CACACA",
   blue1: "#3b9edb", blue2: "#7bbce8", pink: "#e05c8a",
   teal: "#4ec9c9", yellow: "#f0b429", gray: "#f2f2ef",
   border: "#e0e0d8", text: "#333", muted: "#888",
@@ -110,7 +110,7 @@ function CourseCard({ course, size = "normal", themeStyles, navigate }) {
       }}
     >
       {/* Image section - replace CardPattern */}
-      <div style={{ height: size === "small" ? "5.5rem" : "6rem", position: "relative", overflow: "hidden" }}>
+      <div style={{ height: size === "small" ? "7.5rem" : "8rem", position: "relative", overflow: "hidden" }}>
         <img 
           src={course.image} 
           alt={course.code}
@@ -211,6 +211,18 @@ export default function PAUDashboard() {
     arrow: "#1a2a5e",
   };
 
+  const dark = theme === 'dark';
+  const CC = {
+    sidebarBg:  dark ? "#1A2332" : "#E4E4E4",
+    sideHeadBg: dark ? "#101828" : "#FFFFFF",
+    sideBodyBg: dark ? "#27354A" : "#F1F1F1",
+    headBg:     dark ? "#1A2332" : "#EAEAEA",
+    bodyBg:     dark ? "#27354A" : "#DFDFDF",
+    border:     dark ? "#3E4C62" : "#B2B2B2",
+    headingText: dark ? "#FFFFFF" : "#1A2A5E",
+    linkText:    dark ? "#FFFFFF" : "#1A2A5E",
+  };
+
   const filtered = allCourses.filter(c =>
     c.title.toLowerCase().includes(search.toLowerCase()) ||
     c.code.toLowerCase().includes(search.toLowerCase())
@@ -275,24 +287,27 @@ export default function PAUDashboard() {
           {/* Scrollable content area */}
           <div style={{ flex: 1, overflowY: "auto", padding: "1.5rem 2rem" }}>
             {/* Fixed-width inner container — always 3 cards wide, centred in the available space */}
-            <div style={{ width: "47rem", maxWidth: "100%", margin: "0 auto" }}>
+            <div style={{ width: "62rem", maxWidth: "100%", margin: "0 auto" }}>
             <h1 style={{ margin: "0 0 1.5rem 0", fontSize: "1.625rem", fontWeight: "800", color: themeStyles.primaryText }}>Hi, Toluwanimi 👋</h1>
 
             {/* Recently accessed */}
-            <div style={{ background: themeStyles.surface, borderRadius: "0.5rem", border: `1px solid ${themeStyles.border}`, padding: "1.125rem 1.25rem", marginBottom: "1.25rem" }}>
-              <h2 style={{ margin: "0 0 1rem", fontSize: "1rem", fontWeight: "700", color: themeStyles.primaryText }}>Recently accessed courses</h2>
-              <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-                <button style={{ background: themeStyles.surface, border: `1px solid ${themeStyles.border}`, borderRadius: "50%", width: "1.875rem", height: "1.875rem", cursor: "pointer", fontSize: "0.875rem", flexShrink: 0, color: themeStyles.primaryText }}>‹</button>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "0.875rem", flex: 1 }}>
+            <div style={{ borderRadius: "0.5rem", border: `1px solid ${CC.border}`, overflow: "hidden", marginBottom: "1.25rem" }}>
+              <div style={{ background: CC.headBg, padding: "0.875rem 1.25rem", borderBottom: `1px solid ${CC.border}` }}>
+                <h2 style={{ margin: 0, fontSize: "1rem", fontWeight: "700", color: CC.headingText }}>Recently accessed courses</h2>
+              </div>
+              <div style={{ background: CC.bodyBg, padding: "1.125rem 1.25rem" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "0.875rem" }}>
                   {recentCourses.map(c => <CourseCard key={c.code} course={c} size="small" themeStyles={themeStyles} navigate={navigate}/>)}
                 </div>
-                <button style={{ background: themeStyles.surface, border: `1px solid ${themeStyles.border}`, borderRadius: "50%", width: "1.875rem", height: "1.875rem", cursor: "pointer", fontSize: "0.875rem", flexShrink: 0, color: themeStyles.primaryText }}>›</button>
               </div>
             </div>
 
-            {/* Course Overview - fixed 3 per row */}
-            <div style={{ background: themeStyles.surface, borderRadius: "0.5rem", border: `1px solid ${themeStyles.border}`, padding: "1.125rem 1.25rem" }}>
-              <h2 style={{ margin: "0 0 1rem", fontSize: "1rem", fontWeight: "700", color: themeStyles.primaryText }}>Course Overview</h2>
+            {/* Course Overview */}
+            <div style={{ borderRadius: "0.5rem", border: `1px solid ${CC.border}`, overflow: "hidden" }}>
+              <div style={{ background: CC.headBg, padding: "0.875rem 1.25rem", borderBottom: `1px solid ${CC.border}` }}>
+                <h2 style={{ margin: 0, fontSize: "1rem", fontWeight: "700", color: CC.headingText }}>Course Overview</h2>
+              </div>
+              <div style={{ background: CC.bodyBg, padding: "1.125rem 1.25rem" }}>
               <div style={{ display: "flex", gap: "0.625rem", marginBottom: "1rem", flexWrap: "wrap" }}>
                 <select style={{ fontSize: "0.8125rem", padding: "0.375rem 0.625rem", border: `1px solid ${themeStyles.border}`, borderRadius: "0.25rem", fontFamily: "inherit", color: themeStyles.primaryText, background: themeStyles.surface }}>
                   <option>All</option>
@@ -316,7 +331,8 @@ export default function PAUDashboard() {
                   <option>All</option><option>6</option>
                 </select>
               </div>
-            </div>
+            </div>{/* end Course Overview body */}
+            </div>{/* end Course Overview card */}
             </div>{/* end fixed-width wrapper */}
           </div>
         </div>
@@ -328,7 +344,7 @@ export default function PAUDashboard() {
             onClick={() => setSideOpen(true)}
             style={{
               position: "fixed",
-              top: "2.5rem",
+              top: "4.75rem",
               right: "0",
               background: themeStyles.headerFooter,
               color: "white",
@@ -353,8 +369,8 @@ export default function PAUDashboard() {
           transition: "width 0.25s ease", 
           flexShrink: 0,
           overflow: "hidden",
-          background: themeStyles.surface,
-          borderLeft: sideOpen ? `1px solid ${themeStyles.border}` : "none",
+          background: CC.sidebarBg,
+          borderLeft: sideOpen ? `1px solid ${CC.border}` : "none",
           display: "flex",
           flexDirection: "column",
           position: "relative",
@@ -396,39 +412,59 @@ export default function PAUDashboard() {
 
             {sideOpen && (
               <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                <div style={{ background: themeStyles.surface, borderRadius: "0.5rem", border: `1px solid ${themeStyles.border}`, padding: "0.875rem 1rem" }}>
-                  <h3 style={{ margin: "0 0 0.5rem", fontSize: "0.9rem", fontWeight: "700", color: themeStyles.primaryText }}>Private files</h3>
-                  <p style={{ margin: "0 0 0.5rem", color: themeStyles.secondaryText }}>No files available</p>
-                  <a href="#" style={{ color: C.blue1, textDecoration: "none", fontSize: "0.8rem" }}>Manage private files...</a>
+                {/* Private files */}
+                <div style={{ borderRadius: "0.5rem", border: `1px solid ${CC.border}`, overflow: "hidden" }}>
+                  <div style={{ background: CC.sideHeadBg, padding: "0.75rem 1rem", borderBottom: `1px solid ${CC.border}` }}>
+                    <h3 style={{ margin: 0, fontSize: "0.9rem", fontWeight: "700", color: CC.headingText }}>Private files</h3>
+                  </div>
+                  <div style={{ background: CC.sideBodyBg, padding: "0.75rem 1rem" }}>
+                    <p style={{ margin: "0 0 0.5rem", color: themeStyles.secondaryText, fontSize: "0.82rem" }}>No files available</p>
+                    <a href="#" style={{ color: CC.linkText, textDecoration: "none", fontSize: "0.8rem", fontWeight: 600 }}>Manage private files...</a>
+                  </div>
                 </div>
 
-                <div style={{ background: themeStyles.surface, borderRadius: "0.5rem", border: `1px solid ${themeStyles.border}`, padding: "0.875rem 1rem" }}>
-                  <h3 style={{ margin: "0 0 0.5rem", fontSize: "0.9rem", fontWeight: "700", color: themeStyles.primaryText }}>Online users</h3>
-                  <p style={{ margin: "0 0 0.6rem", color: themeStyles.secondaryText, fontSize: "0.78rem" }}>48 online users (last 5 minutes)</p>
-                  {[
-                    { name: "Toluwanimi Ade...", online: true },
-                    { name: "Anthony OKPUR...", online: false },
-                    { name: "Jason Ezechukwu", online: false },
-                    { name: "Nehireme OSEG...", online: false },
-                    { name: "Chioma Arinze", online: false },
-                  ].map(u => (
-                    <div key={u.name} style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.35rem" }}>
-                      <div style={{ width: "0.55rem", height: "0.55rem", borderRadius: "50%", background: u.online ? C.green : "#bbb", flexShrink: 0 }} />
-                      <a href="#" style={{ color: C.blue1, textDecoration: "none", fontSize: "0.8rem" }}>{u.name}</a>
-                    </div>
-                  ))}
-                  <p style={{ margin: "0.3rem 0 0", color: themeStyles.secondaryText, fontSize: "0.78rem" }}>Other users (39)</p>
+                {/* Online users */}
+                <div style={{ borderRadius: "0.5rem", border: `1px solid ${CC.border}`, overflow: "hidden" }}>
+                  <div style={{ background: CC.sideHeadBg, padding: "0.75rem 1rem", borderBottom: `1px solid ${CC.border}` }}>
+                    <h3 style={{ margin: 0, fontSize: "0.9rem", fontWeight: "700", color: CC.headingText }}>Online users</h3>
+                  </div>
+                  <div style={{ background: CC.sideBodyBg, padding: "0.75rem 1rem" }}>
+                    <p style={{ margin: "0 0 0.6rem", color: themeStyles.secondaryText, fontSize: "0.78rem" }}>48 online users (last 5 minutes)</p>
+                    {[
+                      { name: "Toluwanimi Adeyemo", online: true },
+                      { name: "Anthony OKPURU", online: false },
+                      { name: "Jason Ezechukwu", online: false },
+                      { name: "Chidera OKAFOR", online: false },
+                      { name: "Charles Igah", online: false },
+                    ].map(u => (
+                      <div key={u.name} style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.4rem" }}>
+                        <div style={{ width: "1.1rem", height: "1.1rem", borderRadius: "50%", background: "#ccc", flexShrink: 0 }} />
+                        <a href="#" style={{ color: CC.linkText, textDecoration: "none", fontSize: "0.8rem" }}>{u.name}</a>
+                      </div>
+                    ))}
+                    <p style={{ margin: "0.3rem 0 0", color: themeStyles.secondaryText, fontSize: "0.78rem" }}>Other users (39)</p>
+                  </div>
                 </div>
 
-                <div style={{ background: themeStyles.surface, borderRadius: "0.5rem", border: `1px solid ${themeStyles.border}`, padding: "0.875rem 1rem" }}>
-                  <h3 style={{ margin: "0 0 0.5rem", fontSize: "0.9rem", fontWeight: "700", color: themeStyles.primaryText }}>Latest badges</h3>
-                  <p style={{ margin: 0, color: themeStyles.secondaryText }}>You have no badges to display.</p>
+                {/* Latest badges */}
+                <div style={{ borderRadius: "0.5rem", border: `1px solid ${CC.border}`, overflow: "hidden" }}>
+                  <div style={{ background: CC.sideHeadBg, padding: "0.75rem 1rem", borderBottom: `1px solid ${CC.border}` }}>
+                    <h3 style={{ margin: 0, fontSize: "0.9rem", fontWeight: "700", color: CC.headingText }}>Latest badges</h3>
+                  </div>
+                  <div style={{ background: CC.sideBodyBg, padding: "0.75rem 1rem" }}>
+                    <p style={{ margin: 0, color: themeStyles.secondaryText, fontSize: "0.82rem" }}>You have no badges to display.</p>
+                  </div>
                 </div>
 
-                <div style={{ background: themeStyles.surface, borderRadius: "0.5rem", border: `1px solid ${themeStyles.border}`, padding: "0.875rem 1rem" }}>
-                  <h3 style={{ margin: "0 0 0.5rem", fontSize: "0.9rem", fontWeight: "700", color: themeStyles.primaryText }}>Upcoming events</h3>
-                  <p style={{ margin: "0 0 0.5rem", color: themeStyles.secondaryText }}>There are no upcoming events</p>
-                  <a href="#" style={{ color: C.blue1, textDecoration: "none", fontSize: "0.8rem" }}>Go to calendar...</a>
+                {/* Upcoming events */}
+                <div style={{ borderRadius: "0.5rem", border: `1px solid ${CC.border}`, overflow: "hidden" }}>
+                  <div style={{ background: CC.sideHeadBg, padding: "0.75rem 1rem", borderBottom: `1px solid ${CC.border}` }}>
+                    <h3 style={{ margin: 0, fontSize: "0.9rem", fontWeight: "700", color: CC.headingText }}>Upcoming events</h3>
+                  </div>
+                  <div style={{ background: CC.sideBodyBg, padding: "0.75rem 1rem" }}>
+                    <p style={{ margin: "0 0 0.5rem", color: themeStyles.secondaryText, fontSize: "0.82rem" }}>There are no upcoming events</p>
+                    <a href="#" style={{ color: CC.linkText, textDecoration: "none", fontSize: "0.8rem", fontWeight: 600 }}>Go to calendar...</a>
+                  </div>
                 </div>
               </div>
             )}
@@ -469,7 +505,7 @@ export default function PAUDashboard() {
           </div>
         </div>
       </footer>
-      <div style={{ background: C.navyDark, color:"#888", textAlign:"center", padding:"0.75rem", fontSize:"0.78125rem", borderTop:"0.0625rem solid rgba(255,255,255,0.07)" }}>
+      <div style={{ background: C.navyDark, color:"#fff", textAlign:"center", padding:"0.75rem", fontSize:"0.78125rem", borderTop:"0.0625rem solid rgba(255,255,255,0.07)" }}>
         Copyright © 2026 – Developed by PAU ICT and Toluwanimi Adeyemo. Powered by Moodle
       </div>
     </div>
