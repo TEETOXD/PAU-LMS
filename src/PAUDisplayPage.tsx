@@ -79,7 +79,7 @@ export default function PAUDisplayPage() {
     border: "#2A3A5E",
     arrow: "#FFFFFF",
   } : {
-    background: "#f5f5f0",
+    background: "#F0F0F0",
     surface: "white",
     headerFooter: "#1a2a5e",
     primaryText: "#1a2a5e",

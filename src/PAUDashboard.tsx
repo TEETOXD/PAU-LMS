@@ -2,6 +2,14 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from './ThemeContext';
 import { useFontSize } from './FontSizeContext';
+import lightLogo from './assets/Approved Standard Logo.png';
+import darkLogo from './assets/Approved Standard Logo - Dark.png';
+import courseimage1 from './assets/course1.png';
+import courseimage2 from './assets/course2.png';
+import courseimage3 from './assets/course3.png';
+import courseimage4 from './assets/course4.png';
+import courseimage5 from './assets/course5.png';
+import courseimage6 from './assets/course6.png';
 
 const C = {
   navy: "#1a2a5e", navyDark: "#111d45", gold: "#c8a84b",
@@ -12,18 +20,18 @@ const C = {
 };
 
 const recentCourses = [
-  { code: "ISM 402", title: "Production M...",    semester: "Semester 2", color: C.blue1,  pattern: "grid" },
-  { code: "ISM 408", title: "Project II",          semester: "Semester 2", color: C.blue2,  pattern: "plaid" },
-  { code: "ISM 404", title: "Professional Et...",  semester: "Semester 2", color: C.pink,   pattern: "circles" },
+  { code: "ISM 402", title: "Production M...",    semester: "Semester 2", color: C.blue1,  pattern: "grid", image: courseimage1 },
+  { code: "ISM 408", title: "Project II",          semester: "Semester 2", color: C.blue2,  pattern: "plaid", image: courseimage2 },
+  { code: "ISM 404", title: "Professional Et...",  semester: "Semester 2", color: C.pink,   pattern: "circles", image: courseimage3 },
 ];
 
 const allCourses = [
-  { code: "ISM 402", title: "Production Management (TV)", semester: "Semester 2", color: C.blue1,   pattern: "grid",    complete: true },
-  { code: "ISM 404", title: "Professional Ethics",        semester: "Semester 2", color: C.pink,    pattern: "circles", complete: true },
-  { code: "ISM 406", title: "Digital Rendering",          semester: "Semester 2", color: "#b0bec5", pattern: "rings",   complete: true },
-  { code: "ISM 408", title: "Project II",                 semester: "Semester 2", color: C.blue2,   pattern: "plaid",   complete: true },
-  { code: "ISM 413", title: "Entertainment Media",        semester: "Semester 2", color: C.yellow,  pattern: "dots",    complete: true },
-  { code: "ISM 414", title: "Computer Security",          semester: "Semester 2", color: C.teal,    pattern: "plaid",   complete: true },
+  { code: "ISM 402", title: "Production Management (TV)", semester: "Semester 2", color: C.blue1,   pattern: "grid",    complete: true, image: courseimage1 },
+  { code: "ISM 404", title: "Professional Ethics",        semester: "Semester 2", color: C.pink,    pattern: "circles", complete: true, image: courseimage2 },
+  { code: "ISM 406", title: "Digital Rendering",          semester: "Semester 2", color: "#b0bec5", pattern: "rings",   complete: true, image: courseimage3 },
+  { code: "ISM 408", title: "Project II",                 semester: "Semester 2", color: C.blue2,   pattern: "plaid",   complete: true, image: courseimage4 },
+  { code: "ISM 413", title: "Entertainment Media",        semester: "Semester 2", color: C.yellow,  pattern: "dots",    complete: true, image: courseimage5 },
+  { code: "ISM 414", title: "Computer Security",          semester: "Semester 2", color: C.teal,    pattern: "plaid",   complete: true, image: courseimage6 },
 ];
 
 function CardPattern({ pattern, color }) {
@@ -86,10 +94,11 @@ const ChatIcon = () => (
   </svg>
 );
 
-function CourseCard({ course, size = "normal", themeStyles }) {
+function CourseCard({ course, size = "normal", themeStyles, navigate }) {
   const [hov, setHov] = useState(false);
   return (
     <div
+      onClick={() => navigate(`/course/${course.code}`)}
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       style={{
@@ -100,8 +109,13 @@ function CourseCard({ course, size = "normal", themeStyles }) {
         transform: hov ? "translateY(-0.1rem)" : "none",
       }}
     >
+      {/* Image section - replace CardPattern */}
       <div style={{ height: size === "small" ? "5.5rem" : "6rem", position: "relative", overflow: "hidden" }}>
-        <CardPattern pattern={course.pattern} color={course.color}/>
+        <img 
+          src={course.image} 
+          alt={course.code}
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+        />
       </div>
       <div style={{ padding: "0.6rem 0.75rem 0.5rem" }}>
         <div style={{ fontSize: "0.82rem", fontWeight: "600", color: themeStyles.primaryText, lineHeight: 1.3 }}>
@@ -143,7 +157,7 @@ function TADropdown({ themeStyles, navigate }) {
   
   return (
     <div ref={ref} style={{ position: "relative" }}>
-      <button onClick={() => setOpen(o => !o)} style={{ display:"flex", alignItems:"center", gap:"0.4rem", background:"none", border:"none", cursor:"pointer", padding:"0.25rem" }}>
+      <button onClick={() => setOpen(o => !o)} style={{ display:"flex", alignItems:"center", gap:"0.4rem", background:"none", border:"none", cursor:"pointer", padding:"0" }}>
         <div style={{ width:"2.125rem", height:"2.125rem", borderRadius:"50%", background: open ? themeStyles.primaryText : C.gold, color: C.navy, border: open ? `2px solid ${themeStyles.primaryText}` : "none", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:"bold", fontSize:"0.875rem", fontFamily:"inherit", transition:"all 0.15s" }}>TA</div>
         <span style={{ color: "white", fontSize:"0.75rem" }}>{open ? "▲" : "▾"}</span>
       </button>
@@ -188,7 +202,7 @@ export default function PAUDashboard() {
     border: "#2A3A5E",
     arrow: "#FFFFFF",
   } : {
-    background: "#f5f5f0",
+    background: "#F0F0F0",
     surface: "white",
     headerFooter: "#1a2a5e",
     primaryText: "#1a2a5e",
@@ -206,16 +220,24 @@ export default function PAUDashboard() {
     <div style={{ fontFamily:"'Century Gothic', 'CenturyGothic', 'AppleGothic', sans-serif", minHeight:"100vh", background: themeStyles.background, color: themeStyles.primaryText, display:"flex", flexDirection:"column" }}>
 
       {/* Top bar */}
-      <div style={{ background: themeStyles.headerFooter, color: "white", display:"flex", justifyContent:"space-between", alignItems:"center", padding:"0.5rem 2rem", fontSize:"0.8125rem" }}>
+      <div style={{ 
+        background: themeStyles.headerFooter, 
+        color: "white", 
+        display:"flex", 
+        justifyContent:"space-between", 
+        alignItems:"center", 
+        padding:"0.5rem 2rem", 
+        fontSize:"0.8125rem" }}>
         <div style={{ display:"flex", gap:"1.75rem" }}>
           <span>📞 Call us : (+234) 708 864 1465 &nbsp; (+234) 701 782 5427</span>
           <span>✉ E-mail : admissions@pau.edu.ng</span>
         </div>
-        <div style={{ display:"flex", alignItems:"center", gap:"1rem" }}>
+        <div style={{ 
+          display:"flex", alignItems:"center", gap:"1rem" }}>
           <BellIcon />
           <ChatIcon />
           <TADropdown themeStyles={themeStyles} navigate={navigate} />
-          <span style={{ fontSize:"0.8125rem" }}>Edit Mode</span>
+          <span style={{ fontSize:"0.8125rem," }}>Edit Mode</span>
           <div onClick={() => setEditMode(e => !e)} style={{ width:"2.5rem", height:"1.375rem", borderRadius:"0.6875rem", background: editMode ? C.blue1 : "#555", position:"relative", cursor:"pointer", transition:"background 0.2s" }}>
             <div style={{ position:"absolute", top:"0.125rem", left: editMode ? "1.25rem" : "0.125rem", width:"1.125rem", height:"1.125rem", borderRadius:"50%", background: "white", transition:"left 0.2s" }}/>
           </div>
@@ -231,21 +253,13 @@ export default function PAUDashboard() {
           {/* Nav bar */}
           <div style={{ background: themeStyles.surface, borderBottom: `0.0625rem solid ${themeStyles.border}`, display: "flex", alignItems: "center", padding: "0 2rem", flexWrap: "wrap" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginRight: "2rem", padding: "0.75rem 0" }}>
-              <svg width="3.25rem" height="3.25rem" viewBox="0 0 52 52" fill="none">
-                <rect width="52" height="52" rx="4" fill={C.navy}/>
-                <circle cx="16" cy="16" r="5" fill="none" stroke={C.gold} strokeWidth="2"/>
-                <circle cx="26" cy="16" r="5" fill="none" stroke={C.gold} strokeWidth="2"/>
-                <circle cx="36" cy="16" r="5" fill="none" stroke={C.gold} strokeWidth="2"/>
-                <path d="M10 22 Q26 38 42 22" stroke={C.gold} strokeWidth="2" fill="none"/>
-                <path d="M10 28 Q26 44 42 28" stroke={C.gold} strokeWidth="1.5" fill="none" strokeDasharray="3,2"/>
-                <path d="M26 36 L26 46" stroke={C.gold} strokeWidth="1.5"/>
-              </svg>
-              <div>
-                <div style={{ fontWeight: "800", fontSize: "0.9375rem", color: themeStyles.primaryText, letterSpacing: "0.04em", lineHeight: 1.1 }}>PAN-ATLANTIC</div>
-                <div style={{ fontSize: "0.6875rem", color: themeStyles.secondaryText, letterSpacing: "0.08em" }}>UNIVERSITY</div>
-              </div>
+              <img 
+                src={theme === 'dark' ? darkLogo : lightLogo} 
+                alt="PAN-ATLANTIC UNIVERSITY"
+                style={{ height: "3.25rem", width: "auto" }}
+              />
             </div>
-            {["Home", "Dashboard", "My Courses", "Professional Education ▾", "Undergraduate Programmes ▾", "More ▾"].map(item => (
+            {["Home", "Dashboard", "My Courses", "Professional Education ▾", "Undergraduate Programmes ▾", "Postgraduate Programmes ▾", "CDP ▾"].map(item => (
               <button key={item} 
                 onClick={() => {
                   if (item === "Home") navigate("/");
@@ -264,13 +278,13 @@ export default function PAUDashboard() {
             <div style={{ width: "47rem", maxWidth: "100%", margin: "0 auto" }}>
             <h1 style={{ margin: "0 0 1.5rem 0", fontSize: "1.625rem", fontWeight: "800", color: themeStyles.primaryText }}>Hi, Toluwanimi 👋</h1>
 
-            {/* Recently accessed - fixed 3 per row */}
+            {/* Recently accessed */}
             <div style={{ background: themeStyles.surface, borderRadius: "0.5rem", border: `1px solid ${themeStyles.border}`, padding: "1.125rem 1.25rem", marginBottom: "1.25rem" }}>
               <h2 style={{ margin: "0 0 1rem", fontSize: "1rem", fontWeight: "700", color: themeStyles.primaryText }}>Recently accessed courses</h2>
               <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
                 <button style={{ background: themeStyles.surface, border: `1px solid ${themeStyles.border}`, borderRadius: "50%", width: "1.875rem", height: "1.875rem", cursor: "pointer", fontSize: "0.875rem", flexShrink: 0, color: themeStyles.primaryText }}>‹</button>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "0.875rem", flex: 1 }}>
-                  {recentCourses.map(c => <CourseCard key={c.code} course={c} size="small" themeStyles={themeStyles} />)}
+                  {recentCourses.map(c => <CourseCard key={c.code} course={c} size="small" themeStyles={themeStyles} navigate={navigate}/>)}
                 </div>
                 <button style={{ background: themeStyles.surface, border: `1px solid ${themeStyles.border}`, borderRadius: "50%", width: "1.875rem", height: "1.875rem", cursor: "pointer", fontSize: "0.875rem", flexShrink: 0, color: themeStyles.primaryText }}>›</button>
               </div>
@@ -294,7 +308,7 @@ export default function PAUDashboard() {
                 </select>
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "0.875rem" }}>
-                {filtered.map(c => <CourseCard key={c.code} course={c} themeStyles={themeStyles} />)}
+                {filtered.map(c => <CourseCard key={c.code} course={c} themeStyles={themeStyles} navigate={navigate}/>)}
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginTop: "1rem", fontSize: "0.8125rem", color: themeStyles.primaryText }}>
                 <span>Show</span>

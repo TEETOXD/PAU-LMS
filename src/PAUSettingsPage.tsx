@@ -161,7 +161,7 @@ export default function PAUSettingsPage() {
     border: "#2A3A5E",
     arrow: "#155DFC",
   } : {
-    background: "#f5f5f0",
+    background: "#F0F0F0",
     surface: "white",
     headerFooter: "#1a2a5e",
     primaryText: "#1a2a5e",
