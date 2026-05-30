@@ -1,10 +1,62 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useFontSize } from './FontSizeContext';
 import { useTheme } from './ThemeContext';
 import lightLogo from './assets/Approved Standard Logo.png';
 import darkLogo from './assets/Approved Standard Logo - Dark.png';
+
+const C = {
+  navy: "#1a2a5e", navyDark: "#000000", gold: "#CACACA",
+};
+
+const TA_GROUPS = [
+  ["Profile","Grades","Calendar","Messages","Private files","Reports"],
+  ["Settings","Language"],
+  ["Log out"],
+];
+
+function TADropdown({ themeStyles, navigate }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+  useEffect(() => {
+    const h = e => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener("mousedown", h);
+    return () => document.removeEventListener("mousedown", h);
+  }, []);
+  const handleItemClick = (item) => {
+    if (item === "Settings") navigate("/");
+    if (item === "Log out") window.location.href = "/";
+    setOpen(false);
+  };
+  return (
+    <div ref={ref} style={{ position: "relative" }}>
+      <button onClick={() => setOpen(o => !o)} style={{ display:"flex", alignItems:"center", gap:"0.4rem", background:"none", border:"none", cursor:"pointer", padding:"0" }}>
+        <div style={{ width:"2.125rem", height:"2.125rem", borderRadius:"50%", background: open ? themeStyles.primaryText : C.gold, color: C.navy, border: open ? `2px solid ${themeStyles.primaryText}` : "none", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:"bold", fontSize:"0.875rem", fontFamily:"inherit", transition:"all 0.15s" }}>TA</div>
+        <span style={{ color: "white", fontSize:"0.75rem" }}>{open ? "▲" : "▾"}</span>
+      </button>
+      {open && (
+        <div style={{ position:"absolute", top:"calc(100% + 0.5rem)", right:0, background: themeStyles.surface, borderRadius:"0.5rem", boxShadow:"0 0.5rem 2rem rgba(0,0,0,0.2)", minWidth:"13rem", zIndex:999, overflow:"hidden" }}>
+          <div style={{ background: C.navy, padding:"0.625rem 1rem", display:"flex", justifyContent:"flex-end", alignItems:"center", gap:"0.5rem" }}>
+            <div style={{ width:"2.25rem", height:"2.25rem", borderRadius:"50%", background: themeStyles.surface, color: C.navy, display:"flex", alignItems:"center", justifyContent:"center", fontWeight:"bold", fontSize:"0.875rem" }}>TA</div>
+            <span style={{ color: "white", fontSize:"0.75rem" }}>▲</span>
+          </div>
+          {TA_GROUPS.map((group, gi) => (
+            <div key={gi}>
+              {gi > 0 && <div style={{ height:"0.0625rem", background: themeStyles.border }}/>}
+              {group.map(item => (
+                <button key={item} onClick={() => handleItemClick(item)} style={{ display:"block", width:"100%", textAlign:"left", padding:"0.75rem 1.25rem", border:"none", background:"none", cursor:"pointer", fontSize:"0.9375rem", color: themeStyles.primaryText, fontFamily:"inherit", transition:"background 0.12s" }}
+                  onMouseEnter={e => e.currentTarget.style.background = themeStyles.border}
+                  onMouseLeave={e => e.currentTarget.style.background = "none"}
+                >{item}</button>
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 const NAV_ITEMS = [
   "Home", "Dashboard", "My Courses",
@@ -120,13 +172,7 @@ export default function PAUDisplayPage() {
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
           <BellIcon />
           <ChatIcon />
-          <div style={{
-            width: "2.125rem", height: "2.125rem", borderRadius: "50%",
-            background: "#cacaca", color: "#1a2a5e",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            fontWeight: "bold", fontSize: "0.875rem",
-          }}>TA</div>
-          <span style={{ color: "white", fontSize: "0.75rem" }}>▾</span>
+          <TADropdown themeStyles={themeStyles} navigate={navigate} />
         </div>
       </div>
 
