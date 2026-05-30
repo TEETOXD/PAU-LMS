@@ -4,12 +4,12 @@ import { useTheme } from './ThemeContext';
 import { useFontSize } from './FontSizeContext';
 import lightLogo from './assets/Approved Standard Logo.png';
 import darkLogo from './assets/Approved Standard Logo - Dark.png';
-import courseimage1 from './assets/course1.png';
-import courseimage2 from './assets/course2.png';
-import courseimage3 from './assets/course3.png';
-import courseimage4 from './assets/course4.png';
-import courseimage5 from './assets/course5.png';
-import courseimage6 from './assets/course6.png';
+import courseimage1 from './assets/Course1.png';
+import courseimage2 from './assets/Course2.png';
+import courseimage3 from './assets/Course3.png';
+import courseimage4 from './assets/Course4.png';
+import courseimage5 from './assets/Course5.png';
+import courseimage6 from './assets/Course6.png';
 
 const C = {
   navy: "#1a2a5e", navyDark: "#000000", gold: "#CACACA",
@@ -20,9 +20,9 @@ const C = {
 };
 
 const recentCourses = [
-  { code: "ISM 402", title: "Production M...",    semester: "Semester 2", color: C.blue1,  pattern: "grid", image: courseimage1 },
+  { code: "ISM 402", title: "Production Management (TV)",    semester: "Semester 2", color: C.blue1,  pattern: "grid", image: courseimage1 },
   { code: "ISM 408", title: "Project II",          semester: "Semester 2", color: C.blue2,  pattern: "plaid", image: courseimage2 },
-  { code: "ISM 404", title: "Professional Et...",  semester: "Semester 2", color: C.pink,   pattern: "circles", image: courseimage3 },
+  { code: "ISM 404", title: "Professional Ethics",  semester: "Semester 2", color: C.pink,   pattern: "circles", image: courseimage3 },
 ];
 
 const allCourses = [
