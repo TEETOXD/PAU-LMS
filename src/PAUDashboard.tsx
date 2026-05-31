@@ -4,6 +4,7 @@ import { useTheme } from './ThemeContext';
 import { useFontSize } from './FontSizeContext';
 import lightLogo from './assets/Approved Standard Logo.png';
 import darkLogo from './assets/Approved Standard Logo - Dark.png';
+import contrastLogo from './assets/Approved Standard Logo - Contrast.png';
 import courseimage1 from './assets/Course1.png';
 import courseimage2 from './assets/Course2.png';
 import courseimage3 from './assets/Course3.png';
@@ -94,8 +95,52 @@ const ChatIcon = () => (
   </svg>
 );
 
+function BellDropdown({ themeStyles, navigate }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+  useEffect(() => {
+    const h = e => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener("mousedown", h);
+    return () => document.removeEventListener("mousedown", h);
+  }, []);
+
+  const notifications = [
+    { title: "Platform Update", body: "Now available: customize your screen and text controls", action: () => navigate("/display") },
+    { title: "ISM 402", body: "AGADA-Mba Margaret has given feedback for assignment CA 3", action: null },
+  ];
+
+  return (
+    <div ref={ref} style={{ position: "relative" }}>
+      <button onClick={() => setOpen(o => !o)} style={{ background: "none", border: "none", cursor: "pointer", padding: "0.25rem", display: "flex", alignItems: "center" }}>
+        <BellIcon />
+      </button>
+      {open && (
+        <div style={{ position: "absolute", top: "calc(100% + 0.5rem)", right: 0, background: themeStyles.surface, borderRadius: "0.75rem", boxShadow: "0 0.5rem 2rem rgba(0,0,0,0.18)", minWidth: "20rem", zIndex: 999, overflow: "hidden", border: `1px solid ${themeStyles.border}` }}>
+          {notifications.map((n, i) => (
+            <div key={i}>
+              {i > 0 && <div style={{ height: "0.0625rem", background: themeStyles.border }} />}
+              <div onClick={() => { if (n.action) { n.action(); setOpen(false); } }}
+                style={{ padding: "1rem 1.25rem", cursor: n.action ? "pointer" : "default", transition: "background 0.12s" }}
+                onMouseEnter={e => { if (n.action) e.currentTarget.style.background = themeStyles.hover; }}
+                onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}>
+                <div style={{ fontWeight: "700", fontSize: "0.9375rem", color: themeStyles.primaryText, marginBottom: "0.3rem" }}>{n.title}</div>
+                <div style={{ fontSize: "0.875rem", color: themeStyles.secondaryText, lineHeight: 1.4 }}>{n.body}</div>
+              </div>
+            </div>
+          ))}
+          <div style={{ borderTop: `1px solid ${themeStyles.border}` }}>
+            <button style={{ width: "100%", padding: "0.875rem", background: "none", border: "none", cursor: "pointer", fontSize: "0.9375rem", color: themeStyles.primaryText, fontFamily: "inherit", textAlign: "center" }}>See all</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function CourseCard({ course, size = "normal", themeStyles, navigate }) {
   const [hov, setHov] = useState(false);
+  const hc = themeStyles.headerFooter === "#000000" && themeStyles.background === "#FFFFFF";
+  const completeColor = hc ? "#000000" : C.green;
   return (
     <div
       onClick={() => navigate(`/course/${course.code}`)}
@@ -109,7 +154,6 @@ function CourseCard({ course, size = "normal", themeStyles, navigate }) {
         transform: hov ? "translateY(-0.1rem)" : "none",
       }}
     >
-      {/* Image section - replace CardPattern */}
       <div style={{ height: size === "small" ? "7.5rem" : "8rem", position: "relative", overflow: "hidden" }}>
         <img 
           src={course.image} 
@@ -124,7 +168,7 @@ function CourseCard({ course, size = "normal", themeStyles, navigate }) {
         <div style={{ fontSize: "0.75rem", color: themeStyles.secondaryText, marginTop: "0.2rem" }}>{course.semester}</div>
         {course.complete !== undefined && (
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "0.5rem" }}>
-            <span style={{ fontSize: "0.75rem", color: C.green, fontWeight: "600" }}>100% complete</span>
+            <span style={{ fontSize: "0.75rem", color: completeColor, fontWeight: "600" }}>100% complete</span>
             <span style={{ fontSize: "1rem", color: themeStyles.secondaryText, cursor: "pointer" }}>⋮</span>
           </div>
         )}
@@ -173,8 +217,8 @@ function TADropdown({ themeStyles, navigate }) {
               {gi > 0 && <div style={{ height:"0.0625rem", background: themeStyles.border }}/>}
               {group.map(item => (
                 <button key={item} onClick={() => handleItemClick(item)} style={{ display:"block", width:"100%", textAlign:"left", padding:"0.75rem 1.25rem", border:"none", background:"none", cursor:"pointer", fontSize:"0.9375rem", color: themeStyles.primaryText, fontFamily:"inherit", transition:"background 0.12s" }}
-                  onMouseEnter={e => e.currentTarget.style.background = themeStyles.border}
-                  onMouseLeave={e => e.currentTarget.style.background = "none"}
+                  onMouseEnter={e => { e.currentTarget.style.background = themeStyles.hover; e.currentTarget.style.color = themeStyles.primaryText; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = "none"; e.currentTarget.style.color = themeStyles.primaryText; }}
                 >{item}</button>
               ))}
             </div>
@@ -201,6 +245,16 @@ export default function PAUDashboard() {
     secondaryText: "#9E9E9E",
     border: "#2A3A5E",
     arrow: "#FFFFFF",
+    hover: "#2A3A5E",
+  } : theme === 'highcontrast' ? {
+    background: "#FFFFFF",
+    surface: "#FFFFFF",
+    headerFooter: "#000000",
+    primaryText: "#000000",
+    secondaryText: "#444444",
+    border: "#000000",
+    arrow: "#000000",
+    hover: "#E0E0E0",
   } : {
     background: "#F0F0F0",
     surface: "white",
@@ -209,18 +263,20 @@ export default function PAUDashboard() {
     secondaryText: "#666666",
     border: "#e0e0d8",
     arrow: "#1a2a5e",
+    hover: "#e0e0d8",
   };
 
   const dark = theme === 'dark';
+  const hc = theme === 'highcontrast';
   const CC = {
-    sidebarBg:  dark ? "#1A2332" : "#E4E4E4",
-    sideHeadBg: dark ? "#101828" : "#FFFFFF",
-    sideBodyBg: dark ? "#27354A" : "#F1F1F1",
-    headBg:     dark ? "#1A2332" : "#EAEAEA",
-    bodyBg:     dark ? "#27354A" : "#DFDFDF",
-    border:     dark ? "#3E4C62" : "#B2B2B2",
-    headingText: dark ? "#FFFFFF" : "#1A2A5E",
-    linkText:    dark ? "#FFFFFF" : "#1A2A5E",
+    sidebarBg:  hc ? "#FFFFFF" : dark ? "#1A2332" : "#E4E4E4",
+    sideHeadBg: hc ? "#FFFFFF" : dark ? "#101828" : "#FFFFFF",
+    sideBodyBg: hc ? "#FFFFFF" : dark ? "#27354A" : "#F1F1F1",
+    headBg:     hc ? "#FFFFFF" : dark ? "#1A2332" : "#EAEAEA",
+    bodyBg:     hc ? "#FFFFFF" : dark ? "#27354A" : "#DFDFDF",
+    border:     hc ? "#000000" : dark ? "#3E4C62" : "#B2B2B2",
+    headingText: hc ? "#000000" : dark ? "#FFFFFF" : "#1A2A5E",
+    linkText:    hc ? "#000000" : dark ? "#FFFFFF" : "#1A2A5E",
   };
 
   const filtered = allCourses.filter(c =>
@@ -246,7 +302,7 @@ export default function PAUDashboard() {
         </div>
         <div style={{ 
           display:"flex", alignItems:"center", gap:"1rem" }}>
-          <BellIcon />
+          <BellDropdown themeStyles={themeStyles} navigate={navigate} />
           <ChatIcon />
           <TADropdown themeStyles={themeStyles} navigate={navigate} />
           <span style={{ fontSize:"0.8125rem," }}>Edit Mode</span>
@@ -266,7 +322,7 @@ export default function PAUDashboard() {
           <div style={{ background: themeStyles.surface, borderBottom: `0.0625rem solid ${themeStyles.border}`, display: "flex", alignItems: "center", padding: "0 2rem", flexWrap: "wrap" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginRight: "2rem", padding: "0.75rem 0" }}>
               <img 
-                src={theme === 'dark' ? darkLogo : lightLogo} 
+                src={theme === 'dark' ? darkLogo : theme === 'highcontrast' ? contrastLogo : lightLogo} 
                 alt="PAN-ATLANTIC UNIVERSITY"
                 style={{ height: "3.25rem", width: "auto" }}
               />
@@ -278,8 +334,8 @@ export default function PAUDashboard() {
                   if (item === "Dashboard") navigate("/dashboard");
                 }}
                 style={{ background: "none", border: "none", cursor: "pointer", padding: "1.125rem 0.75rem", fontSize: "0.84375rem", color: themeStyles.primaryText, fontFamily: "inherit", fontWeight: "500", whiteSpace: "nowrap", borderBottom: "0.1875rem solid transparent", transition: "border-color 0.2s" }}
-                onMouseEnter={e => e.currentTarget.style.borderBottomColor = themeStyles.border}
-                onMouseLeave={e => e.currentTarget.style.borderBottomColor = "transparent"}
+                onMouseEnter={e => { e.currentTarget.style.borderBottomColor = themeStyles.border; }}
+                onMouseLeave={e => { e.currentTarget.style.borderBottomColor = "transparent"; }}
               >{item}</button>
             ))}
           </div>

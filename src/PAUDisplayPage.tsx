@@ -5,6 +5,7 @@ import { useFontSize } from './FontSizeContext';
 import { useTheme } from './ThemeContext';
 import lightLogo from './assets/Approved Standard Logo.png';
 import darkLogo from './assets/Approved Standard Logo - Dark.png';
+import contrastLogo from './assets/Approved Standard Logo - Contrast.png';
 
 const C = {
   navy: "#1a2a5e", navyDark: "#000000", gold: "#CACACA",
@@ -46,8 +47,8 @@ function TADropdown({ themeStyles, navigate }) {
               {gi > 0 && <div style={{ height:"0.0625rem", background: themeStyles.border }}/>}
               {group.map(item => (
                 <button key={item} onClick={() => handleItemClick(item)} style={{ display:"block", width:"100%", textAlign:"left", padding:"0.75rem 1.25rem", border:"none", background:"none", cursor:"pointer", fontSize:"0.9375rem", color: themeStyles.primaryText, fontFamily:"inherit", transition:"background 0.12s" }}
-                  onMouseEnter={e => e.currentTarget.style.background = themeStyles.border}
-                  onMouseLeave={e => e.currentTarget.style.background = "none"}
+                  onMouseEnter={e => { e.currentTarget.style.background = themeStyles.hover; e.currentTarget.style.color = themeStyles.primaryText; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = "none"; e.currentTarget.style.color = themeStyles.primaryText; }}
                 >{item}</button>
               ))}
             </div>
@@ -85,6 +86,46 @@ const ChatIcon = () => (
     <path d="M6 17l4-3h6" stroke="white" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
   </svg>
 );
+
+function BellDropdown({ themeStyles, navigate }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+  useEffect(() => {
+    const h = e => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener("mousedown", h);
+    return () => document.removeEventListener("mousedown", h);
+  }, []);
+  const notifications = [
+    { title: "Platform Update", body: "Now available: customize your screen and text controls", action: () => navigate("/display") },
+    { title: "ISM 402", body: "AGADA-Mba Margaret has given feedback for assignment CA 3", action: null },
+  ];
+  return (
+    <div ref={ref} style={{ position: "relative" }}>
+      <button onClick={() => setOpen(o => !o)} style={{ background: "none", border: "none", cursor: "pointer", padding: "0.25rem", display: "flex", alignItems: "center" }}>
+        <BellIcon />
+      </button>
+      {open && (
+        <div style={{ position: "absolute", top: "calc(100% + 0.5rem)", right: 0, background: themeStyles.surface, borderRadius: "0.75rem", boxShadow: "0 0.5rem 2rem rgba(0,0,0,0.18)", minWidth: "20rem", zIndex: 999, overflow: "hidden", border: `1px solid ${themeStyles.border}` }}>
+          {notifications.map((n, i) => (
+            <div key={i}>
+              {i > 0 && <div style={{ height: "0.0625rem", background: themeStyles.border }} />}
+              <div onClick={() => { if (n.action) { n.action(); setOpen(false); } }}
+                style={{ padding: "1rem 1.25rem", cursor: n.action ? "pointer" : "default" }}
+                onMouseEnter={e => { if (n.action) e.currentTarget.style.background = themeStyles.hover; }}
+                onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}>
+                <div style={{ fontWeight: "700", fontSize: "0.9375rem", color: themeStyles.primaryText, marginBottom: "0.3rem" }}>{n.title}</div>
+                <div style={{ fontSize: "0.875rem", color: themeStyles.secondaryText, lineHeight: 1.4 }}>{n.body}</div>
+              </div>
+            </div>
+          ))}
+          <div style={{ borderTop: `1px solid ${themeStyles.border}` }}>
+            <button style={{ width: "100%", padding: "0.875rem", background: "none", border: "none", cursor: "pointer", fontSize: "0.9375rem", color: themeStyles.primaryText, fontFamily: "inherit", textAlign: "center" }}>See all</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 const XIcon = () => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -130,6 +171,16 @@ export default function PAUDisplayPage() {
     secondaryText: "#9E9E9E",
     border: "#2A3A5E",
     arrow: "#FFFFFF",
+    hover: "#2A3A5E",
+  } : theme === 'highcontrast' ? {
+    background: "#FFFFFF",
+    surface: "#FFFFFF",
+    headerFooter: "#000000",
+    primaryText: "#000000",
+    secondaryText: "#444444",
+    border: "#000000",
+    arrow: "#000000",
+    hover: "#E0E0E0",
   } : {
     background: "#F0F0F0",
     surface: "white",
@@ -138,6 +189,7 @@ export default function PAUDisplayPage() {
     secondaryText: "#666666",
     border: "#e0e0d8",
     arrow: "#1a2a5e",
+    hover: "#e0e0d8",
   };
 
   const ChevronRight = () => (
@@ -170,7 +222,7 @@ export default function PAUDisplayPage() {
           <span>✉ E-mail : admissions@pau.edu.ng</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-          <BellIcon />
+          <BellDropdown themeStyles={themeStyles} navigate={navigate} />
           <ChatIcon />
           <TADropdown themeStyles={themeStyles} navigate={navigate} />
         </div>
@@ -186,7 +238,7 @@ export default function PAUDisplayPage() {
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginRight: "2rem", padding: "0.75rem 0" }}>
           <img 
-            src={theme === 'dark' ? darkLogo : lightLogo} 
+            src={theme === 'dark' ? darkLogo : theme === 'highcontrast' ? contrastLogo : lightLogo} 
             alt="PAN-ATLANTIC UNIVERSITY"
             style={{ height: "3.25rem", width: "auto" }}
           />
@@ -242,7 +294,7 @@ export default function PAUDisplayPage() {
               style={{
                 display: "block", width: "100%", textAlign: "left",
                 padding: "0.875rem 1.5rem", border: "none", cursor: "pointer",
-                background: activeSection === key ? themeStyles.border : "transparent",
+                background: activeSection === key ? themeStyles.hover : "transparent",
                 color: themeStyles.primaryText,
                 fontFamily: "inherit",
                 fontSize: "0.90625rem",
@@ -250,7 +302,7 @@ export default function PAUDisplayPage() {
                 borderLeft: activeSection === key ? `0.25rem solid ${themeStyles.arrow}` : "0.25rem solid transparent",
                 transition: "all 0.15s",
               }}
-              onMouseEnter={e => { if (activeSection !== key) e.currentTarget.style.background = themeStyles.border; }}
+              onMouseEnter={e => { if (activeSection !== key) e.currentTarget.style.background = themeStyles.hover; }}
               onMouseLeave={e => { if (activeSection !== key) e.currentTarget.style.background = "transparent"; }}
             >
               {label}
@@ -297,13 +349,13 @@ export default function PAUDisplayPage() {
             <h2 style={{ fontSize: "1rem", fontWeight: "700", color: themeStyles.primaryText, margin: "0 0 0.375rem" }}>Theme</h2>
             <p style={{ margin: "0 0 1rem", color: themeStyles.secondaryText, fontSize: "0.875rem" }}>Change your UI theme below</p>
             <div style={{ display: "flex", gap: "2rem", alignItems: "center" }}>
-              {["light", "dark"].map((opt) => (
+              {(["light", "dark", "highcontrast"] as const).map((opt) => (
                 <label key={opt} style={{
                   display: "flex", alignItems: "center", gap: "0.5rem",
                   cursor: "pointer", fontSize: "0.9375rem", color: themeStyles.primaryText,
                   fontWeight: theme === opt ? "600" : "400",
                 }}>
-                  <div onClick={() => setTheme(opt as 'light' | 'dark')} style={{
+                  <div onClick={() => setTheme(opt)} style={{
                     width: "1.25rem", height: "1.25rem", borderRadius: "50%",
                     border: `2px solid ${themeStyles.arrow}`,
                     display: "flex", alignItems: "center", justifyContent: "center",
@@ -317,7 +369,7 @@ export default function PAUDisplayPage() {
                       }} />
                     )}
                   </div>
-                  {opt === "light" ? "Light mode" : "Dark mode"}
+                  {opt === "light" ? "Light mode" : opt === "dark" ? "Dark mode" : "High contrast"}
                 </label>
               ))}
             </div>

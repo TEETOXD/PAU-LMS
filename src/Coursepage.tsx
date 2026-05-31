@@ -4,6 +4,7 @@ import { useFontSize } from './FontSizeContext';
 import { useTheme } from './ThemeContext';
 import lightLogo from './assets/Approved Standard Logo.png';
 import darkLogo from './assets/Approved Standard Logo - Dark.png';
+import contrastLogo from './assets/Approved Standard Logo - Contrast.png';
 
 const C = {
   navy: "#1a2a5e", navyDark: "#111d45", gold: "#c8a84b",
@@ -101,7 +102,48 @@ const ChatIcon = () => (
   </svg>
 );
 
+function BellDropdown({ themeStyles, navigate }: { themeStyles: ThemeStyles; navigate: ReturnType<typeof useNavigate> }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const h = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false); };
+    document.addEventListener("mousedown", h);
+    return () => document.removeEventListener("mousedown", h);
+  }, []);
+  const notifications = [
+    { title: "Platform Update", body: "Now available: customize your screen and text controls", action: () => navigate("/display") },
+    { title: "ISM 402", body: "AGADA-Mba Margaret has given feedback for assignment CA 3", action: null as (() => void) | null },
+  ];
+  return (
+    <div ref={ref} style={{ position: "relative" }}>
+      <button onClick={() => setOpen(o => !o)} style={{ background: "none", border: "none", cursor: "pointer", padding: "0.25rem", display: "flex", alignItems: "center" }}>
+        <BellIcon />
+      </button>
+      {open && (
+        <div style={{ position: "absolute", top: "calc(100% + 0.5rem)", right: 0, background: themeStyles.surface, borderRadius: "0.75rem", boxShadow: "0 0.5rem 2rem rgba(0,0,0,0.18)", minWidth: "20rem", zIndex: 999, overflow: "hidden", border: `1px solid ${themeStyles.border}` }}>
+          {notifications.map((n, i) => (
+            <div key={i}>
+              {i > 0 && <div style={{ height: "0.0625rem", background: themeStyles.border }} />}
+              <div onClick={() => { if (n.action) { n.action(); setOpen(false); } }}
+                style={{ padding: "1rem 1.25rem", cursor: n.action ? "pointer" : "default" }}
+                onMouseEnter={e => { if (n.action) (e.currentTarget as HTMLDivElement).style.background = "#E0E0E0"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background = "transparent"; }}>
+                <div style={{ fontWeight: "700", fontSize: "0.9375rem", color: themeStyles.primaryText, marginBottom: "0.3rem" }}>{n.title}</div>
+                <div style={{ fontSize: "0.875rem", color: themeStyles.secondaryText, lineHeight: 1.4 }}>{n.body}</div>
+              </div>
+            </div>
+          ))}
+          <div style={{ borderTop: `1px solid ${themeStyles.border}` }}>
+            <button style={{ width: "100%", padding: "0.875rem", background: "none", border: "none", cursor: "pointer", fontSize: "0.9375rem", color: themeStyles.primaryText, fontFamily: "inherit", textAlign: "center" }}>See all</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function ItemIcon({ type, color }: { type: string; color: string }) {
+  if (type === "pdf") return <DocIcon color={color} />;
   if (type === "book") return <BookIcon color={color} />;
   if (type === "url")  return <UrlIcon color={color} />;
   return <DocIcon color={color} />;
@@ -145,8 +187,8 @@ function TADropdown({ themeStyles, navigate }: { themeStyles: ThemeStyles; navig
               {group.map(item => (
                 <button key={item} onClick={() => handleItemClick(item)}
                   style={{ display: "block", width: "100%", textAlign: "left", padding: "0.75rem 1.25rem", border: "none", background: "none", cursor: "pointer", fontSize: "0.9375rem", color: themeStyles.primaryText, fontFamily: "inherit", transition: "background 0.12s" }}
-                  onMouseEnter={e => e.currentTarget.style.background = themeStyles.border}
-                  onMouseLeave={e => e.currentTarget.style.background = "none"}>{item}</button>
+                  onMouseEnter={e => { e.currentTarget.style.background = themeStyles.border === "#FFFFFF" ? "#333333" : "#E0E0E0"; e.currentTarget.style.color = themeStyles.primaryText; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = "none"; e.currentTarget.style.color = themeStyles.primaryText; }}>{item}</button>
               ))}
             </div>
           ))}
@@ -163,7 +205,7 @@ function CollapsibleWeek({ week, themeStyles, isExpanded, onToggle }: { week: We
     <div style={{ marginBottom: "0.375rem", border: `1px solid ${themeStyles.border}`, borderRadius: "0.375rem", overflow: "hidden" }}>
       <button onClick={onToggle}
         style={{ width: "100%", padding: "1.1rem 1rem", background: themeStyles.surface, border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: "0.6rem", fontSize: "0.9rem", fontWeight: 600, color: themeStyles.primaryText, textAlign: "left", fontFamily: "inherit" }}
-        onMouseEnter={e => (e.currentTarget.style.background = themeStyles.border)}
+        onMouseEnter={e => (e.currentTarget.style.background = themeStyles.border === "#FFFFFF" ? "#333333" : "#E0E0E0")}
         onMouseLeave={e => (e.currentTarget.style.background = themeStyles.surface)}>
         <span style={{ fontSize: "0.65rem", color: themeStyles.secondaryText, width: "0.75rem", flexShrink: 0, display: "inline-block" }}>
           {isExpanded ? "▼" : "▶"}
@@ -208,6 +250,9 @@ export default function CoursePage() {
   const themeStyles: ThemeStyles = theme === "dark" ? {
     background: "#0F1419", surface: "#1A2332", headerFooter: "#0E1664",
     primaryText: "#FFFFFF", secondaryText: "#9E9E9E", border: "#2A3A5E",
+  } : theme === "highcontrast" ? {
+    background: "#FFFFFF", surface: "#FFFFFF", headerFooter: "#000000",
+    primaryText: "#000000", secondaryText: "#444444", border: "#000000",
   } : {
     background: "#F0F0F0", surface: "#ffffff", headerFooter: "#1a2a5e",
     primaryText: "#1a2a5e", secondaryText: "#666666", border: "#e0e0d8",
@@ -251,7 +296,7 @@ export default function CoursePage() {
           <span>✉ E-mail : admissions@pau.edu.ng</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-            <BellIcon />
+            <BellDropdown themeStyles={themeStyles} navigate={navigate} />
             <ChatIcon />
             <div style={{
                 width: "2.125rem", height: "2.125rem", borderRadius: "50%",
@@ -271,14 +316,14 @@ export default function CoursePage() {
           <div style={{ background: themeStyles.surface, borderBottom: `0.0625rem solid ${themeStyles.border}`, display: "flex", alignItems: "center", padding: "0 2rem", flexWrap: "wrap" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginRight: "2rem", padding: "0.75rem 0" }}>
               <img 
-                src={theme === 'dark' ? darkLogo : lightLogo} 
+                src={theme === 'dark' ? darkLogo : theme === 'highcontrast' ? contrastLogo : lightLogo} 
                 alt="PAN-ATLANTIC UNIVERSITY"
                 style={{ height: "3.25rem", width: "auto" }}
               />
             </div>
             {NAV_ITEMS.map(item => (
               <button key={item}
-                onClick={() => { if (item === "Home") navigate("/"); if (item === "Dashboard") navigate("/dashboard"); if (item === "My Courses") navigate("/dashboard"); }}
+                onClick={() => { if (item === "Dashboard") navigate("/dashboard"); }}
                 style={{ background: "none", border: "none", cursor: "pointer", padding: "1.125rem 0.75rem", fontSize: "0.84375rem", color: themeStyles.primaryText, fontFamily: "inherit", fontWeight: "500", whiteSpace: "nowrap", borderBottom: "0.1875rem solid transparent", transition: "border-color 0.2s" }}
                 onMouseEnter={e => e.currentTarget.style.borderBottomColor = themeStyles.border}
                 onMouseLeave={e => e.currentTarget.style.borderBottomColor = "transparent"}>
