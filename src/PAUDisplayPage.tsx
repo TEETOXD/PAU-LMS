@@ -25,23 +25,22 @@ function TADropdown({ themeStyles, navigate }) {
     document.addEventListener("mousedown", h);
     return () => document.removeEventListener("mousedown", h);
   }, []);
+
   const handleItemClick = (item) => {
-    if (item === "Settings") navigate("/");
+    if (item === "Settings") navigate("/settings");
     if (item === "Log out") window.location.href = "/";
     setOpen(false);
   };
+
   return (
     <div ref={ref} style={{ position: "relative" }}>
       <button onClick={() => setOpen(o => !o)} style={{ display:"flex", alignItems:"center", gap:"0.4rem", background:"none", border:"none", cursor:"pointer", padding:"0" }}>
         <div style={{ width:"2.125rem", height:"2.125rem", borderRadius:"50%", background: open ? themeStyles.primaryText : C.gold, color: C.navy, border: open ? `2px solid ${themeStyles.primaryText}` : "none", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:"bold", fontSize:"0.875rem", fontFamily:"inherit", transition:"all 0.15s" }}>TA</div>
         <span style={{ color: "white", fontSize:"0.75rem" }}>{open ? "▲" : "▾"}</span>
       </button>
+
       {open && (
         <div style={{ position:"absolute", top:"calc(100% + 0.5rem)", right:0, background: themeStyles.surface, borderRadius:"0.5rem", boxShadow:"0 0.5rem 2rem rgba(0,0,0,0.2)", minWidth:"13rem", zIndex:999, overflow:"hidden" }}>
-          <div style={{ background: C.navy, padding:"0.625rem 1rem", display:"flex", justifyContent:"flex-end", alignItems:"center", gap:"0.5rem" }}>
-            <div style={{ width:"2.25rem", height:"2.25rem", borderRadius:"50%", background: themeStyles.surface, color: C.navy, display:"flex", alignItems:"center", justifyContent:"center", fontWeight:"bold", fontSize:"0.875rem" }}>TA</div>
-            <span style={{ color: "white", fontSize:"0.75rem" }}>▲</span>
-          </div>
           {TA_GROUPS.map((group, gi) => (
             <div key={gi}>
               {gi > 0 && <div style={{ height:"0.0625rem", background: themeStyles.border }}/>}
@@ -172,6 +171,9 @@ export default function PAUDisplayPage() {
     border: "#2A3A5E",
     arrow: "#FFFFFF",
     hover: "#2A3A5E",
+    helpButton: "#155DFC",
+    buttonBg: "#0F1419",
+    buttonBorder: "#6D88B0",
   } : theme === 'highcontrast' ? {
     background: "#FFFFFF",
     surface: "#FFFFFF",
@@ -181,6 +183,9 @@ export default function PAUDisplayPage() {
     border: "#000000",
     arrow: "#000000",
     hover: "#E0E0E0",
+    helpButton: "#000000",
+    buttonBg: "#FFFFFF",
+    buttonBorder: "#000000",
   } : {
     background: "#F0F0F0",
     surface: "white",
@@ -190,6 +195,9 @@ export default function PAUDisplayPage() {
     border: "#e0e0d8",
     arrow: "#1a2a5e",
     hover: "#e0e0d8",
+    helpButton: "#1a2a5e",
+    buttonBg: "#F0F0F0",
+    buttonBorder: "#B3B3B3",
   };
 
   const ChevronRight = () => (
@@ -247,9 +255,9 @@ export default function PAUDisplayPage() {
           {NAV_ITEMS.map((item) => (
             <button key={item} 
               onClick={() => {
-                if (item === "Dashboard") {
-                  navigate("/dashboard");
-                }
+                if (item === "Dashboard") navigate("/dashboard");
+                if (item === "My Courses") navigate("/my-courses");
+                if (item === "Home") navigate("/");
               }}
               style={{
                 background: "none", border: "none", cursor: "pointer",
@@ -258,8 +266,7 @@ export default function PAUDisplayPage() {
                 borderBottom: "0.1875rem solid transparent",
                 transition: "border-color 0.2s",
               }}
-              onMouseEnter={e => e.currentTarget.style.borderBottomColor = themeStyles.border}
-              onMouseLeave={e => e.currentTarget.style.borderBottomColor = "transparent"}
+
             >
               {item}{["Professional Education","Undergraduate Programmes","Postgraduate Programmes","CDP"].includes(item) ? " ▾" : ""}
             </button>
@@ -286,7 +293,7 @@ export default function PAUDisplayPage() {
             <button key={key}
               onClick={() => {
                 if (label === "User account") {
-                  navigate("/");
+                  navigate("/settings");
                 } else {
                   setActiveSection(key);
                 }
@@ -409,60 +416,36 @@ export default function PAUDisplayPage() {
       </div>
 
       {/* Footer */}
-      <div style={{
-        background: themeStyles.headerFooter,
-        color: "white",
-        padding: "2.25rem 3rem",
-        display: "grid",
-        gridTemplateColumns: "1.4fr 1fr 1.4fr 1fr",
-        gap: "3rem",
-        fontSize: "0.8125rem",
-      }}>
-        {/* Mission */}
-        <div>
-          <p style={{ margin: "0", color: "#d0cdc5", fontSize: "0.78125rem", fontStyle: "italic", lineHeight: "1.7" }}>
-            The Mission Statement of the University is: "to form competent and committed professionals and encourage them to serve with personal initiative and social responsibility the community in which they work, thereby helping to build a better society in Nigeria and Africa at large." This
-          </p>
-        </div>
-
-        {/* Info */}
-        <div>
-          <h4 style={{ color: "#ffffff", fontWeight: "700", margin: "0 0 0.875rem", fontSize: "0.9375rem", letterSpacing: "0.04em" }}>Info</h4>
-          {["PAU Website", "PAU Servicedesk", "PAU Privacy Policy", "Apply to PAU"].map(link => (
-            <div key={link} style={{ marginBottom: "0.5rem" }}>
-              <a href="#" style={{ color: "#c0bdb5", textDecoration: "underline", fontSize: "0.8125rem" }}>{link}</a>
-            </div>
-          ))}
-        </div>
-
-        {/* Contact */}
-        <div>
-          <h4 style={{ color: "#ffffff", fontWeight: "700", margin: "0 0 0.875rem", fontSize: "0.9375rem", letterSpacing: "0.04em" }}>Contact Us</h4>
-          <p style={{ margin: "0 0 0.625rem", color: "#d0cdc5", lineHeight: "1.6" }}>
-            Km 52, Lekki-Epe Expressway, Ibeju-Lekki,<br/>PO Box 73688, Lagos, Nigeria
-          </p>
-          <p style={{ margin: 0, color: "#d0cdc5" }}>
-            📞 Phone : (+234) 708 864 1465 (+234) 701 782 5427
-          </p>
-        </div>
-
-        {/* Follow */}
-        <div>
-          <h4 style={{ color: "#ffffff", fontWeight: "700", margin: "0 0 0.875rem", fontSize: "0.9375rem", letterSpacing: "0.04em" }}>Follow Us</h4>
-          <div style={{ display: "flex", gap: "0.625rem" }}>
-            {[XIcon, LinkedInIcon, YouTubeIcon, FacebookIcon].map((Icon, i) => (
-              <div key={i} style={{
-                width: "2.125rem", height: "2.125rem", borderRadius: "0.25rem",
-                border: "0.0625rem solid rgba(255,255,255,0.2)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                cursor: "pointer",
-              }}>
-                <Icon />
-              </div>
+        <footer style={{ background: themeStyles.headerFooter, color: "white", padding:"2.25rem 3rem", display:"grid", gridTemplateColumns:"1.6fr 1fr 1.4fr 1fr", gap:"3rem", fontSize:"0.8125rem" }}>
+          <div>
+            <p style={{ margin:0, color:"#c8c5bc", lineHeight:"1.7", fontStyle:"italic", fontSize:"0.78125rem" }}>
+              The Mission Statement of the University is: "to form competent and committed professionals and encourage them to serve with personal initiative and social responsibility the community in which they work, thereby helping to build a better society in Nigeria and Africa at large." This dream encapsulates the purpose of the University.
+            </p>
+          </div>
+          <div>
+            <h4 style={{ color: "#ffffff", fontWeight:"700", margin:"0 0 0.875rem", fontSize:"0.9375rem" }}>Info</h4>
+            {["PAU Website","PAU Servicedesk","PAU Privacy Policy","Apply to PAU"].map(l => (
+              <div key={l} style={{ marginBottom:"0.5rem" }}><a href="#" style={{ color:"#c0bdb5", textDecoration:"underline", fontSize:"0.8125rem" }}>{l}</a></div>
             ))}
           </div>
+          <div>
+            <h4 style={{ color: "#ffffff", fontWeight:"700", margin:"0 0 0.875rem", fontSize:"0.9375rem" }}>Contact Us</h4>
+            <p style={{ margin:"0 0 0.625rem", color:"#d0cdc5", lineHeight:"1.6" }}>Km 52, Lekki-Epe Expressway, Ibeju-Lekki,<br/>PO Box 73688, Lagos, Nigeria</p>
+            <p style={{ margin:"0 0 0.375rem", color:"#d0cdc5" }}>📞 Phone : (+234) 708 864 1465 (+234) 701 782 5427</p>
+            <p style={{ margin:0, color:"#d0cdc5" }}>✉ Email : admissions@pau.edu.ng</p>
+          </div>
+          <div>
+            <h4 style={{ color: "#ffffff", fontWeight:"700", margin:"0 0 0.875rem", fontSize:"0.9375rem" }}>Follow Us</h4>
+            <div style={{ display:"flex", gap:"0.625rem" }}>
+              {["𝕏","in","▶","f"].map((icon,i) => (
+                <div key={i} style={{ width:"2.125rem", height:"2.125rem", borderRadius:"0.25rem", border:"0.0625rem solid rgba(255,255,255,0.25)", display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", fontSize:"0.875rem", color: "white" }}>{icon}</div>
+              ))}
+            </div>
+          </div>
+        </footer>
+        <div style={{ background: "#000", color:"#fff", textAlign:"center", padding:"0.75rem", fontSize:"0.78125rem", borderTop:"0.0625rem solid rgba(255,255,255,0.07)" }}>
+          Copyright © 2026 – Developed by PAU ICT and Toluwanimi Adeyemo. Powered by Moodle
         </div>
-      </div>
     </div>
   );
 }

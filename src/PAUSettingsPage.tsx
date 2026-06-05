@@ -12,8 +12,8 @@ const C = {
 };
 
 const TA_GROUPS = [
-  ["Profile","Grades","Calendar","Messages","Private files","Reports"],
-  ["Settings","Language"],
+  ["Profile", "Grades", "Calendar", "Messages", "Private files", "Reports"],
+  ["Settings", "Language"],
   ["Log out"],
 ];
 
@@ -25,23 +25,22 @@ function TADropdown({ themeStyles, navigate }) {
     document.addEventListener("mousedown", h);
     return () => document.removeEventListener("mousedown", h);
   }, []);
+
   const handleItemClick = (item) => {
-    if (item === "Settings") navigate("/");
+    if (item === "Settings") navigate("/settings");
     if (item === "Log out") window.location.href = "/";
     setOpen(false);
   };
+
   return (
     <div ref={ref} style={{ position: "relative" }}>
       <button onClick={() => setOpen(o => !o)} style={{ display:"flex", alignItems:"center", gap:"0.4rem", background:"none", border:"none", cursor:"pointer", padding:"0" }}>
         <div style={{ width:"2.125rem", height:"2.125rem", borderRadius:"50%", background: open ? themeStyles.primaryText : C.gold, color: C.navy, border: open ? `2px solid ${themeStyles.primaryText}` : "none", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:"bold", fontSize:"0.875rem", fontFamily:"inherit", transition:"all 0.15s" }}>TA</div>
         <span style={{ color: "white", fontSize:"0.75rem" }}>{open ? "▲" : "▾"}</span>
       </button>
+
       {open && (
         <div style={{ position:"absolute", top:"calc(100% + 0.5rem)", right:0, background: themeStyles.surface, borderRadius:"0.5rem", boxShadow:"0 0.5rem 2rem rgba(0,0,0,0.2)", minWidth:"13rem", zIndex:999, overflow:"hidden" }}>
-          <div style={{ background: C.navy, padding:"0.625rem 1rem", display:"flex", justifyContent:"flex-end", alignItems:"center", gap:"0.5rem" }}>
-            <div style={{ width:"2.25rem", height:"2.25rem", borderRadius:"50%", background: themeStyles.surface, color: C.navy, display:"flex", alignItems:"center", justifyContent:"center", fontWeight:"bold", fontSize:"0.875rem" }}>TA</div>
-            <span style={{ color: "white", fontSize:"0.75rem" }}>▲</span>
-          </div>
           {TA_GROUPS.map((group, gi) => (
             <div key={gi}>
               {gi > 0 && <div style={{ height:"0.0625rem", background: themeStyles.border }}/>}
@@ -178,32 +177,37 @@ function SettingButtonWithNavigation({ label, navigateTo, themeStyles }) {
   const [hovered, setHovered] = useState(false);
   
   return (
-    <button
+    <div
       onClick={() => navigate(navigateTo)}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        display: "flex", alignItems: "center", gap: "0.75rem",
-        background: hovered ? themeStyles.hover : themeStyles.surface,
-        border: `0.0625rem solid ${hovered ? themeStyles.arrow : themeStyles.border}`,
-        borderRadius: "0.5rem",
-        padding: "0.875rem 1rem",
+        display: "flex", alignItems: "center", gap: "0.625rem",
         cursor: "pointer",
-        fontFamily: "'Century Gothic', 'CenturyGothic', 'AppleGothic', sans-serif",
-        fontSize: "0.875rem", color: themeStyles.primaryText,
-        fontWeight: "500",
-        textAlign: "left",
-        transition: "all 0.15s",
-        boxShadow: hovered ? "0 0.125rem 0.5rem rgba(26,42,94,0.1)" : "0 0.0625rem 0.1875rem rgba(0,0,0,0.04)",
-        transform: hovered ? "translateY(-0.0625rem)" : "none",
       }}
     >
-      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="9" cy="9" r="9" fill={themeStyles.arrow}/>
-        <path d="M7 5.5L11 9L7 12.5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-      {label}
-    </button>
+      {/* Arrow circle — sits OUTSIDE the border box */}
+      <div style={{ flexShrink: 0 }}>
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="14" cy="14" r="14" fill={themeStyles.arrow}/>
+          <path d="M11 8.5L17 14L11 19.5" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </div>
+      {/* Bordered label box */}
+      <div style={{
+        flex: 1,
+        background: hovered ? themeStyles.hover : themeStyles.buttonBg,
+        border: `0.0625rem solid ${themeStyles.buttonBorder}`,
+        borderRadius: "0.5rem",
+        padding: "0.75rem 1rem",
+        fontFamily: "'Century Gothic', 'CenturyGothic', 'AppleGothic', sans-serif",
+        fontSize: "0.9375rem", color: themeStyles.primaryText,
+        fontWeight: "500",
+        transition: "background 0.15s",
+      }}>
+        {label}
+      </div>
+    </div>
   );
 }
 
@@ -211,31 +215,36 @@ function SettingButtonWithNavigation({ label, navigateTo, themeStyles }) {
 function SettingButton({ label, themeStyles }) {
   const [hovered, setHovered] = useState(false);
   return (
-    <button
+    <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        display: "flex", alignItems: "center", gap: "0.75rem",
-        background: hovered ? themeStyles.hover : themeStyles.surface,
-        border: `0.0625rem solid ${hovered ? themeStyles.arrow : themeStyles.border}`,
-        borderRadius: "0.5rem",
-        padding: "0.875rem 1rem",
+        display: "flex", alignItems: "center", gap: "0.625rem",
         cursor: "pointer",
-        fontFamily: "'Century Gothic', 'CenturyGothic', 'AppleGothic', sans-serif",
-        fontSize: "0.875rem", color: themeStyles.primaryText,
-        fontWeight: "500",
-        textAlign: "left",
-        transition: "all 0.15s",
-        boxShadow: hovered ? "0 0.125rem 0.5rem rgba(26,42,94,0.1)" : "0 0.0625rem 0.1875rem rgba(0,0,0,0.04)",
-        transform: hovered ? "translateY(-0.0625rem)" : "none",
       }}
     >
-      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="9" cy="9" r="9" fill={themeStyles.arrow}/>
-        <path d="M7 5.5L11 9L7 12.5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-      {label}
-    </button>
+      {/* Arrow circle — sits OUTSIDE the border box */}
+      <div style={{ flexShrink: 0 }}>
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="14" cy="14" r="14" fill={themeStyles.arrow}/>
+          <path d="M11 8.5L17 14L11 19.5" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </div>
+      {/* Bordered label box */}
+      <div style={{
+        flex: 1,
+        background: hovered ? themeStyles.hover : themeStyles.buttonBg,
+        border: `0.0625rem solid ${themeStyles.buttonBorder}`,
+        borderRadius: "0.5rem",
+        padding: "0.75rem 1rem",
+        fontFamily: "'Century Gothic', 'CenturyGothic', 'AppleGothic', sans-serif",
+        fontSize: "0.9375rem", color: themeStyles.primaryText,
+        fontWeight: "500",
+        transition: "background 0.15s",
+      }}>
+        {label}
+      </div>
+    </div>
   );
 }
 
@@ -254,6 +263,9 @@ export default function PAUSettingsPage() {
     border: "#2A3A5E",
     arrow: "#155DFC",
     hover: "#2A3A5E",
+    helpButton: "#155DFC",
+    buttonBg: "#0F1419",
+    buttonBorder: "#6D88B0",
   } : theme === 'highcontrast' ? {
     background: "#FFFFFF",
     surface: "#FFFFFF",
@@ -263,6 +275,9 @@ export default function PAUSettingsPage() {
     border: "#000000",
     arrow: "#000000",
     hover: "#E0E0E0",
+    helpButton: "#000000",
+    buttonBg: "#FFFFFF",
+    buttonBorder: "#000000",
   } : {
     background: "#F0F0F0",
     surface: "white",
@@ -272,6 +287,9 @@ export default function PAUSettingsPage() {
     border: "#e0e0d8",
     arrow: "#1a2a5e",
     hover: "#e0e0d8",
+    helpButton: "#1a2a5e",
+    buttonBg: "#F0F0F0",
+    buttonBorder: "#B3B3B3",
   };
 
   return (
@@ -324,9 +342,9 @@ export default function PAUSettingsPage() {
           {NAV_ITEMS.map((item) => (
             <button key={item} 
               onClick={() => {
-                if (item === "Dashboard") {
-                  navigate("/dashboard");
-                }
+                if (item === "Dashboard") navigate("/dashboard");
+                if (item === "My Courses") navigate("/my-courses");
+                if (item === "Home") navigate("/");
               }}
               style={{
                 background: "none", border: "none", cursor: "pointer",
@@ -335,8 +353,6 @@ export default function PAUSettingsPage() {
                 borderBottom: "0.1875rem solid transparent",
                 transition: "border-color 0.2s",
               }}
-              onMouseEnter={e => e.currentTarget.style.borderBottomColor = themeStyles.border}
-              onMouseLeave={e => e.currentTarget.style.borderBottomColor = "transparent"}
             >
               {item}{["Professional Education","Undergraduate Programmes","Postgraduate Programmes","CDP"].includes(item) ? " ▾" : ""}
             </button>
@@ -413,8 +429,8 @@ export default function PAUSettingsPage() {
           <div style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
-            gap: "0.875rem",
-            maxWidth: "45rem",
+            gap: "0.875rem 3rem",
+            maxWidth: "52rem",
           }}>
             {SETTINGS_OPTIONS.map(([left, right], rowIdx) => (
               <React.Fragment key={rowIdx}>
@@ -435,60 +451,36 @@ export default function PAUSettingsPage() {
       </div>
 
       {/* Footer */}
-      <div style={{
-        background: themeStyles.headerFooter,
-        color: "white",
-        padding: "2.25rem 3rem",
-        display: "grid",
-        gridTemplateColumns: "1.4fr 1fr 1.4fr 1fr",
-        gap: "3rem",
-        fontSize: "0.8125rem",
-      }}>
-        {/* Mission */}
-        <div>
-          <p style={{ margin: "0", color: "#d0cdc5", fontSize: "0.78125rem", fontStyle: "italic", lineHeight: "1.7" }}>
-            The Mission Statement of the University is: "to form competent and committed professionals and encourage them to serve with personal initiative and social responsibility the community in which they work, thereby helping to build a better society in Nigeria and Africa at large." This
-          </p>
-        </div>
-
-        {/* Info */}
-        <div>
-          <h4 style={{ color: "#ffffff", fontWeight: "700", margin: "0 0 0.875rem", fontSize: "0.9375rem", letterSpacing: "0.04em" }}>Info</h4>
-          {["PAU Website", "PAU Servicedesk", "PAU Privacy Policy", "Apply to PAU"].map(link => (
-            <div key={link} style={{ marginBottom: "0.5rem" }}>
-              <a href="#" style={{ color: "#c0bdb5", textDecoration: "underline", fontSize: "0.8125rem" }}>{link}</a>
-            </div>
-          ))}
-        </div>
-
-        {/* Contact */}
-        <div>
-          <h4 style={{ color: "#ffffff", fontWeight: "700", margin: "0 0 0.875rem", fontSize: "0.9375rem", letterSpacing: "0.04em" }}>Contact Us</h4>
-          <p style={{ margin: "0 0 0.625rem", color: "#d0cdc5", lineHeight: "1.6" }}>
-            Km 52, Lekki-Epe Expressway, Ibeju-Lekki,<br/>PO Box 73688, Lagos, Nigeria
-          </p>
-          <p style={{ margin: 0, color: "#d0cdc5" }}>
-            📞 Phone : (+234) 708 864 1465 (+234) 701 782 5427
-          </p>
-        </div>
-
-        {/* Follow */}
-        <div>
-          <h4 style={{ color: "#ffffff", fontWeight: "700", margin: "0 0 0.875rem", fontSize: "0.9375rem", letterSpacing: "0.04em" }}>Follow Us</h4>
-          <div style={{ display: "flex", gap: "0.625rem" }}>
-            {[XIcon, LinkedInIcon, YouTubeIcon, FacebookIcon].map((Icon, i) => (
-              <div key={i} style={{
-                width: "2.125rem", height: "2.125rem", borderRadius: "0.25rem",
-                border: "0.0625rem solid rgba(255,255,255,0.2)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                cursor: "pointer",
-              }}>
-                <Icon />
-              </div>
+        <footer style={{ background: themeStyles.headerFooter, color: "white", padding:"2.25rem 3rem", display:"grid", gridTemplateColumns:"1.6fr 1fr 1.4fr 1fr", gap:"3rem", fontSize:"0.8125rem" }}>
+          <div>
+            <p style={{ margin:0, color:"#c8c5bc", lineHeight:"1.7", fontStyle:"italic", fontSize:"0.78125rem" }}>
+              The Mission Statement of the University is: "to form competent and committed professionals and encourage them to serve with personal initiative and social responsibility the community in which they work, thereby helping to build a better society in Nigeria and Africa at large." This dream encapsulates the purpose of the University.
+            </p>
+          </div>
+          <div>
+            <h4 style={{ color: "#ffffff", fontWeight:"700", margin:"0 0 0.875rem", fontSize:"0.9375rem" }}>Info</h4>
+            {["PAU Website","PAU Servicedesk","PAU Privacy Policy","Apply to PAU"].map(l => (
+              <div key={l} style={{ marginBottom:"0.5rem" }}><a href="#" style={{ color:"#c0bdb5", textDecoration:"underline", fontSize:"0.8125rem" }}>{l}</a></div>
             ))}
           </div>
+          <div>
+            <h4 style={{ color: "#ffffff", fontWeight:"700", margin:"0 0 0.875rem", fontSize:"0.9375rem" }}>Contact Us</h4>
+            <p style={{ margin:"0 0 0.625rem", color:"#d0cdc5", lineHeight:"1.6" }}>Km 52, Lekki-Epe Expressway, Ibeju-Lekki,<br/>PO Box 73688, Lagos, Nigeria</p>
+            <p style={{ margin:"0 0 0.375rem", color:"#d0cdc5" }}>📞 Phone : (+234) 708 864 1465 (+234) 701 782 5427</p>
+            <p style={{ margin:0, color:"#d0cdc5" }}>✉ Email : admissions@pau.edu.ng</p>
+          </div>
+          <div>
+            <h4 style={{ color: "#ffffff", fontWeight:"700", margin:"0 0 0.875rem", fontSize:"0.9375rem" }}>Follow Us</h4>
+            <div style={{ display:"flex", gap:"0.625rem" }}>
+              {["𝕏","in","▶","f"].map((icon,i) => (
+                <div key={i} style={{ width:"2.125rem", height:"2.125rem", borderRadius:"0.25rem", border:"0.0625rem solid rgba(255,255,255,0.25)", display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", fontSize:"0.875rem", color: "white" }}>{icon}</div>
+              ))}
+            </div>
+          </div>
+        </footer>
+        <div style={{ background: "#000", color:"#fff", textAlign:"center", padding:"0.75rem", fontSize:"0.78125rem", borderTop:"0.0625rem solid rgba(255,255,255,0.07)" }}>
+          Copyright © 2026 – Developed by PAU ICT and Toluwanimi Adeyemo. Powered by Moodle
         </div>
-      </div>
     </div>
   );
 }

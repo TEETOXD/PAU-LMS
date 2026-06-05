@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from './ThemeContext';
 import { useFontSize } from './FontSizeContext';
@@ -193,9 +193,8 @@ function TADropdown({ themeStyles, navigate }) {
   }, []);
   
   const handleItemClick = (item) => {
-    if (item === "Settings") {
-      navigate("/");
-    }
+    if (item === "Settings") navigate("/settings");
+    if (item === "Log out") window.location.href = "/";
     setOpen(false);
   };
   
@@ -208,10 +207,6 @@ function TADropdown({ themeStyles, navigate }) {
 
       {open && (
         <div style={{ position:"absolute", top:"calc(100% + 0.5rem)", right:0, background: themeStyles.surface, borderRadius:"0.5rem", boxShadow:"0 0.5rem 2rem rgba(0,0,0,0.2)", minWidth:"13rem", zIndex:999, overflow:"hidden" }}>
-          <div style={{ background: C.navy, padding:"0.625rem 1rem", display:"flex", justifyContent:"flex-end", alignItems:"center", gap:"0.5rem" }}>
-            <div style={{ width:"2.25rem", height:"2.25rem", borderRadius:"50%", background: themeStyles.surface, color: C.navy, display:"flex", alignItems:"center", justifyContent:"center", fontWeight:"bold", fontSize:"0.875rem" }}>TA</div>
-            <span style={{ color: "white", fontSize:"0.75rem" }}>▲</span>
-          </div>
           {TA_GROUPS.map((group, gi) => (
             <div key={gi}>
               {gi > 0 && <div style={{ height:"0.0625rem", background: themeStyles.border }}/>}
@@ -229,6 +224,89 @@ function TADropdown({ themeStyles, navigate }) {
   );
 }
 
+
+// ─── Responsive Nav ───────────────────────────────────────────────────────────
+function ResponsiveNav({ items, activeItem, themeStyles, onNavigate }: {
+  items: string[];
+  activeItem?: string;
+  themeStyles: any;
+  onNavigate: (item: string) => void;
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [visibleCount, setVisibleCount] = useState(items.length);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const moreRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const measure = () => {
+      const btns = Array.from(el.querySelectorAll<HTMLButtonElement>('[data-nav-item]'));
+      const moreBtnEl = el.querySelector<HTMLButtonElement>('[data-more-btn]');
+      const available = el.offsetWidth - (moreBtnEl ? moreBtnEl.offsetWidth + 8 : 80);
+      let used = 0;
+      let count = 0;
+      for (const btn of btns) {
+        used += btn.offsetWidth;
+        if (used > available) break;
+        count++;
+      }
+      setVisibleCount(count === items.length ? items.length : Math.max(1, count));
+    };
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    measure();
+    return () => ro.disconnect();
+  }, [items]);
+
+  useEffect(() => {
+    const h = (e: MouseEvent) => { if (moreRef.current && !moreRef.current.contains(e.target as Node)) setMoreOpen(false); };
+    document.addEventListener('mousedown', h);
+    return () => document.removeEventListener('mousedown', h);
+  }, []);
+
+  const btnStyle = (item: string): React.CSSProperties => ({
+    background: 'none', border: 'none', cursor: 'pointer',
+    padding: '1.125rem 0.75rem', fontSize: '0.84375rem',
+    color: themeStyles.primaryText, fontFamily: 'inherit',
+    fontWeight: '500', whiteSpace: 'nowrap',
+    borderBottom: item === activeItem ? `0.1875rem solid transparent` : '0.1875rem solid transparent',
+  });
+
+  const hiddenItems = items.slice(visibleCount);
+
+  return (
+    <div ref={containerRef} style={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: 0, overflow: 'hidden', position: 'relative' }}>
+      {items.map((item, i) => (
+        <button
+          key={item}
+          data-nav-item=""
+          onClick={() => onNavigate(item)}
+          style={{ ...btnStyle(item), visibility: i < visibleCount ? 'visible' : 'hidden', position: i < visibleCount ? 'relative' : 'absolute', pointerEvents: i < visibleCount ? 'auto' : 'none' }}
+        >{item}</button>
+      ))}
+      {hiddenItems.length > 0 && (
+        <div ref={moreRef} style={{ position: 'relative', flexShrink: 0 }}>
+          <button data-more-btn="" onClick={() => setMoreOpen(o => !o)}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '1.125rem 0.75rem', fontSize: '0.84375rem', color: themeStyles.primaryText, fontFamily: 'inherit', fontWeight: '500', whiteSpace: 'nowrap' }}>
+            More {moreOpen ? '▲' : '▾'}
+          </button>
+          {moreOpen && (
+            <div style={{ position: 'absolute', top: '100%', right: 0, background: themeStyles.surface, border: `1px solid ${themeStyles.border}`, borderRadius: '0.375rem', boxShadow: '0 0.5rem 1.5rem rgba(0,0,0,0.15)', zIndex: 999, minWidth: '12rem' }}>
+              {hiddenItems.map(item => (
+                <button key={item} onClick={() => { onNavigate(item); setMoreOpen(false); }}
+                  style={{ display: 'block', width: '100%', textAlign: 'left', padding: '0.75rem 1.25rem', border: 'none', background: 'none', cursor: 'pointer', fontSize: '0.875rem', color: themeStyles.primaryText, fontFamily: 'inherit', whiteSpace: 'nowrap' }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = themeStyles.hover; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'none'; }}
+                >{item}</button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 export default function PAUDashboard() {
   const [editMode, setEditMode] = useState(false);
   const [sideOpen, setSideOpen] = useState(true);
@@ -246,6 +324,9 @@ export default function PAUDashboard() {
     border: "#2A3A5E",
     arrow: "#FFFFFF",
     hover: "#2A3A5E",
+    helpButton: "#155DFC",
+    buttonBg: "#0F1419",
+    buttonBorder: "#6D88B0",
   } : theme === 'highcontrast' ? {
     background: "#FFFFFF",
     surface: "#FFFFFF",
@@ -255,6 +336,9 @@ export default function PAUDashboard() {
     border: "#000000",
     arrow: "#000000",
     hover: "#E0E0E0",
+    helpButton: "#000000",
+    buttonBg: "#FFFFFF",
+    buttonBorder: "#000000",
   } : {
     background: "#F0F0F0",
     surface: "white",
@@ -264,6 +348,9 @@ export default function PAUDashboard() {
     border: "#e0e0d8",
     arrow: "#1a2a5e",
     hover: "#e0e0d8",
+    helpButton: "#1a2a5e",
+    buttonBg: "#F0F0F0",
+    buttonBorder: "#B3B3B3",
   };
 
   const dark = theme === 'dark';
@@ -319,7 +406,7 @@ export default function PAUDashboard() {
         <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
 
           {/* Nav bar */}
-          <div style={{ background: themeStyles.surface, borderBottom: `0.0625rem solid ${themeStyles.border}`, display: "flex", alignItems: "center", padding: "0 2rem", flexWrap: "wrap" }}>
+          <div style={{ background: themeStyles.surface, borderBottom: `0.0625rem solid ${themeStyles.border}`, display: "flex", alignItems: "center", padding: "0 2rem", overflow: "hidden", flexWrap: "nowrap" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginRight: "2rem", padding: "0.75rem 0" }}>
               <img 
                 src={theme === 'dark' ? darkLogo : theme === 'highcontrast' ? contrastLogo : lightLogo} 
@@ -327,17 +414,16 @@ export default function PAUDashboard() {
                 style={{ height: "3.25rem", width: "auto" }}
               />
             </div>
-            {["Home", "Dashboard", "My Courses", "Professional Education ▾", "Undergraduate Programmes ▾", "Postgraduate Programmes ▾", "CDP ▾"].map(item => (
-              <button key={item} 
-                onClick={() => {
-                  if (item === "Home") navigate("/");
-                  if (item === "Dashboard") navigate("/dashboard");
-                }}
-                style={{ background: "none", border: "none", cursor: "pointer", padding: "1.125rem 0.75rem", fontSize: "0.84375rem", color: themeStyles.primaryText, fontFamily: "inherit", fontWeight: "500", whiteSpace: "nowrap", borderBottom: "0.1875rem solid transparent", transition: "border-color 0.2s" }}
-                onMouseEnter={e => { e.currentTarget.style.borderBottomColor = themeStyles.border; }}
-                onMouseLeave={e => { e.currentTarget.style.borderBottomColor = "transparent"; }}
-              >{item}</button>
-            ))}
+            <ResponsiveNav
+              items={["Home", "Dashboard", "My Courses", "Professional Education ▾", "Undergraduate Programmes ▾", "Postgraduate Programmes ▾", "CDP ▾"]}
+              activeItem="Dashboard"
+              themeStyles={themeStyles}
+              onNavigate={item => {
+                if (item === "Dashboard") navigate("/dashboard");
+                if (item === "My Courses") navigate("/my-courses");
+                if (item === "Home") navigate("/");
+              }}
+            />
           </div>
 
           {/* Scrollable content area */}
@@ -529,8 +615,14 @@ export default function PAUDashboard() {
       </div>
 
       {/* Help button */}
-      <div style={{ position:"fixed", bottom:"1.5rem", right:"1.5rem", zIndex:100 }}>
-        <button style={{ width:"3rem", height:"3rem", borderRadius:"50%", background: themeStyles.headerFooter, color: "white", border:"none", fontSize:"1.25rem", fontWeight:"700", cursor:"pointer", boxShadow:"0 0.25rem 0.75rem rgba(0,0,0,0.25)" }}>?</button>
+      <div style={{
+        position: "fixed",
+        bottom: "1.5rem",
+        right: sideOpen ? "calc(18rem + 1.5rem)" : "1.5rem",
+        zIndex: 100,
+        transition: "right 0.25s ease",
+      }}>
+        <button style={{ width:"3rem", height:"3rem", borderRadius:"50%", background: themeStyles.helpButton, color: "white", border:"none", fontSize:"1.25rem", fontWeight:"700", cursor:"pointer", boxShadow:"0 0.25rem 0.75rem rgba(0,0,0,0.25)" }}>?</button>
       </div>
 
       {/* Footer */}

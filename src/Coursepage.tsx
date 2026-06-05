@@ -7,7 +7,7 @@ import darkLogo from './assets/Approved Standard Logo - Dark.png';
 import contrastLogo from './assets/Approved Standard Logo - Contrast.png';
 
 const C = {
-  navy: "#1a2a5e", navyDark: "#111d45", gold: "#c8a84b",
+  navy: "#1a2a5e", navyDark: "#111d45", gold: "#CACACA",
   blue1: "#3b9edb", blue2: "#ffffff", pink: "#e05c8a",
   teal: "#4ec9c9", yellow: "#f0b429", gray: "#f2f2ef",
   border: "#e0e0d8", text: "#333", muted: "#888",
@@ -164,23 +164,22 @@ function TADropdown({ themeStyles, navigate }: { themeStyles: ThemeStyles; navig
     document.addEventListener("mousedown", h);
     return () => document.removeEventListener("mousedown", h);
   }, []);
+
   const handleItemClick = (item: string) => {
-    if (item === "Settings") navigate("/");
+    if (item === "Settings") navigate("/settings");
     if (item === "Log out") window.location.href = "/";
     setOpen(false);
   };
+
   return (
     <div ref={ref} style={{ position: "relative" }}>
       <button onClick={() => setOpen(o => !o)} style={{ display: "flex", alignItems: "center", gap: "0.4rem", background: "none", border: "none", cursor: "pointer", padding: "0.25rem" }}>
         <div style={{ width: "2.125rem", height: "2.125rem", borderRadius: "50%", background: open ? themeStyles.primaryText : C.gold, color: C.navy, border: open ? `2px solid ${themeStyles.primaryText}` : "none", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", fontSize: "0.875rem", fontFamily: "inherit", transition: "all 0.15s" }}>TA</div>
         <span style={{ color: "white", fontSize: "0.75rem" }}>{open ? "▲" : "▾"}</span>
       </button>
+
       {open && (
         <div style={{ position: "absolute", top: "calc(100% + 0.5rem)", right: 0, background: themeStyles.surface, borderRadius: "0.5rem", boxShadow: "0 0.5rem 2rem rgba(0,0,0,0.2)", minWidth: "13rem", zIndex: 999, overflow: "hidden" }}>
-          <div style={{ background: C.navy, padding: "0.625rem 1rem", display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "0.5rem" }}>
-            <div style={{ width: "2.25rem", height: "2.25rem", borderRadius: "50%", background: themeStyles.surface, color: C.navy, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", fontSize: "0.875rem" }}>TA</div>
-            <span style={{ color: "white", fontSize: "0.75rem" }}>▲</span>
-          </div>
           {TA_GROUPS.map((group, gi) => (
             <div key={gi}>
               {gi > 0 && <div style={{ height: "0.0625rem", background: themeStyles.border }} />}
@@ -248,7 +247,7 @@ export default function CoursePage() {
   const courseData: CourseData = COURSES_DATA[courseCode || "ISM 402"] || COURSES_DATA["ISM 402"];
 
   const themeStyles: ThemeStyles = theme === "dark" ? {
-    background: "#0F1419", surface: "#1A2332", headerFooter: "#0E1664",
+    background: "#0F1419", surface: "none", headerFooter: "#0E1664",
     primaryText: "#FFFFFF", secondaryText: "#9E9E9E", border: "#2A3A5E",
   } : theme === "highcontrast" ? {
     background: "#FFFFFF", surface: "#FFFFFF", headerFooter: "#000000",
@@ -298,13 +297,7 @@ export default function CoursePage() {
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
             <BellDropdown themeStyles={themeStyles} navigate={navigate} />
             <ChatIcon />
-            <div style={{
-                width: "2.125rem", height: "2.125rem", borderRadius: "50%",
-                background: "#cacaca", color: "#1a2a5e",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontWeight: "bold", fontSize: "0.875rem",
-            }}>TA</div>
-            <span style={{ color: "white", fontSize: "0.75rem" }}>▾</span>
+            <TADropdown themeStyles={themeStyles} navigate={navigate} />
         </div>
       </div>
 
@@ -323,10 +316,12 @@ export default function CoursePage() {
             </div>
             {NAV_ITEMS.map(item => (
               <button key={item}
-                onClick={() => { if (item === "Dashboard") navigate("/dashboard"); }}
-                style={{ background: "none", border: "none", cursor: "pointer", padding: "1.125rem 0.75rem", fontSize: "0.84375rem", color: themeStyles.primaryText, fontFamily: "inherit", fontWeight: "500", whiteSpace: "nowrap", borderBottom: "0.1875rem solid transparent", transition: "border-color 0.2s" }}
-                onMouseEnter={e => e.currentTarget.style.borderBottomColor = themeStyles.border}
-                onMouseLeave={e => e.currentTarget.style.borderBottomColor = "transparent"}>
+                onClick={() => {
+                  if (item === "Dashboard") navigate("/dashboard");
+                  if (item === "My Courses") navigate("/my-courses");
+                  if (item === "Home") navigate("/");
+                }}
+                style={{ background: "none", border: "none", cursor: "pointer", padding: "1.125rem 0.75rem", fontSize: "0.84375rem", color: themeStyles.primaryText, fontFamily: "inherit", fontWeight: "500", whiteSpace: "nowrap", borderBottom: "0.1875rem solid transparent" }}>
                 {item}
               </button>
             ))}
@@ -431,7 +426,7 @@ export default function CoursePage() {
           </div>
         </div>
       </footer>
-      <div style={{ background: C.navyDark, color:"#fff", textAlign:"center", padding:"0.75rem", fontSize:"0.78125rem", borderTop:"0.0625rem solid rgba(255,255,255,0.07)" }}>
+      <div style={{ background: "#000000", color:"#fff", textAlign:"center", padding:"0.75rem", fontSize:"0.78125rem", borderTop:"0.0625rem solid rgba(255, 255, 255, 0)" }}>
         Copyright © 2026 – Developed by PAU ICT and Toluwanimi Adeyemo. Powered by Moodle
       </div>
       </div>{/* end overflowY scroll div */}
