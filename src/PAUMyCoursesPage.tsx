@@ -167,6 +167,89 @@ function CourseCard({ course, themeStyles, navigate }) {
   );
 }
 
+// ─── Responsive Nav ───────────────────────────────────────────────────────────
+function ResponsiveNav({ items, activeItem, themeStyles, onNavigate }: {
+  items: string[];
+  activeItem?: string;
+  themeStyles: any;
+  onNavigate: (item: string) => void;
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [visibleCount, setVisibleCount] = useState(items.length);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const moreRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const measure = () => {
+      const btns = Array.from(el.querySelectorAll<HTMLButtonElement>('[data-nav-item]'));
+      const moreBtnEl = el.querySelector<HTMLButtonElement>('[data-more-btn]');
+      const available = el.offsetWidth - (moreBtnEl ? moreBtnEl.offsetWidth + 8 : 80);
+      let used = 0;
+      let count = 0;
+      for (const btn of btns) {
+        used += btn.offsetWidth;
+        if (used > available) break;
+        count++;
+      }
+      setVisibleCount(count === items.length ? items.length : Math.max(1, count));
+    };
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    measure();
+    return () => ro.disconnect();
+  }, [items]);
+
+  useEffect(() => {
+    const h = (e: MouseEvent) => { if (moreRef.current && !moreRef.current.contains(e.target as Node)) setMoreOpen(false); };
+    document.addEventListener('mousedown', h);
+    return () => document.removeEventListener('mousedown', h);
+  }, []);
+
+  const btnStyle = (item: string): React.CSSProperties => ({
+    background: 'none', border: 'none', cursor: 'pointer',
+    padding: '1.125rem 0.75rem', fontSize: '0.84375rem',
+    color: themeStyles.primaryText, fontFamily: 'inherit',
+    fontWeight: '500', whiteSpace: 'nowrap',
+    borderBottom: item === activeItem ? `0.1875rem solid transparent` : '0.1875rem solid transparent',
+  });
+
+  const hiddenItems = items.slice(visibleCount);
+
+  return (
+    <div ref={containerRef} style={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: 0, overflow: 'hidden', position: 'relative' }}>
+      {items.map((item, i) => (
+        <button
+          key={item}
+          data-nav-item=""
+          onClick={() => onNavigate(item)}
+          style={{ ...btnStyle(item), visibility: i < visibleCount ? 'visible' : 'hidden', position: i < visibleCount ? 'relative' : 'absolute', pointerEvents: i < visibleCount ? 'auto' : 'none' }}
+        >{item}</button>
+      ))}
+      {hiddenItems.length > 0 && (
+        <div ref={moreRef} style={{ position: 'relative', flexShrink: 0 }}>
+          <button data-more-btn="" onClick={() => setMoreOpen(o => !o)}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '1.125rem 0.75rem', fontSize: '0.84375rem', color: themeStyles.primaryText, fontFamily: 'inherit', fontWeight: '500', whiteSpace: 'nowrap' }}>
+            More {moreOpen ? '▲' : '▾'}
+          </button>
+          {moreOpen && (
+            <div style={{ position: 'absolute', top: '100%', right: 0, background: themeStyles.surface, border: `1px solid ${themeStyles.border}`, borderRadius: '0.375rem', boxShadow: '0 0.5rem 1.5rem rgba(0,0,0,0.15)', zIndex: 999, minWidth: '12rem' }}>
+              {hiddenItems.map(item => (
+                <button key={item} onClick={() => { onNavigate(item); setMoreOpen(false); }}
+                  style={{ display: 'block', width: '100%', textAlign: 'left', padding: '0.75rem 1.25rem', border: 'none', background: 'none', cursor: 'pointer', fontSize: '0.875rem', color: themeStyles.primaryText, fontFamily: 'inherit', whiteSpace: 'nowrap' }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = themeStyles.hover; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'none'; }}
+                >{item}</button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function PAUMyCoursesPage() {
   const [editMode, setEditMode] = useState(false);
   const [search, setSearch] = useState("");
@@ -221,8 +304,6 @@ export default function PAUMyCoursesPage() {
     headingText: hc ? "#000000" : dark ? "#FFFFFF" : "#1A2A5E",
   };
 
-  const NAV_ITEMS = ["Home", "Dashboard", "My Courses", "Professional Education", "Undergraduate Programmes", "Postgraduate Programmes", "CDP"];
-
   const filtered = allCourses.filter(c =>
     `${c.code} ${c.title}`.toLowerCase().includes(search.toLowerCase())
   );
@@ -248,36 +329,24 @@ export default function PAUMyCoursesPage() {
       </div>
 
       {/* Nav bar */}
-      <div style={{ background: themeStyles.surface, borderBottom:`0.0625rem solid ${themeStyles.border}`, display: "flex", alignItems: "center", padding: "0 2rem", flexWrap: "wrap" }}>
+      <div style={{ background: themeStyles.surface, borderBottom: `0.0625rem solid ${themeStyles.border}`, display: "flex", alignItems: "center", padding: "0 2rem", overflow: "hidden", flexWrap: "nowrap" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginRight: "2rem", padding: "0.75rem 0" }}>
-          <img
-            src={theme === 'dark' ? darkLogo : theme === 'highcontrast' ? contrastLogo : lightLogo}
+          <img 
+            src={theme === 'dark' ? darkLogo : theme === 'highcontrast' ? contrastLogo : lightLogo} 
             alt="PAN-ATLANTIC UNIVERSITY"
             style={{ height: "3.25rem", width: "auto" }}
           />
         </div>
-        {["Home", "Dashboard", "My Courses", "Professional Education ▾", "Undergraduate Programmes ▾", "Postgraduate Programmes ▾", "CDP ▾"].map(item => (
-          <button key={item}
-            onClick={() => {
-              if (item === "Dashboard") navigate("/dashboard");
-              if (item === "My Courses") navigate("/my-courses");
-              if (item === "Home") navigate("/");
-            }}
-            style={{
-              background: "none", 
-              border: "none", 
-              cursor: "pointer",
-              padding: "1.125rem 0.75rem", 
-              fontSize: "0.84375rem",
-              color: themeStyles.primaryText, 
-              fontFamily: "inherit", 
-              fontWeight: "500",
-              whiteSpace: "nowrap",
-              borderBottom: item === "My Courses" ? `0.1875rem solid transparent` : "0.1875rem solid transparent",
-              transition: "border-color 0.2s",
-            }}
-          >{item}</button>
-        ))}
+        <ResponsiveNav
+          items={["Home", "Dashboard", "My Courses", "Professional Education ▾", "Undergraduate Programmes ▾", "Postgraduate Programmes ▾", "CDP ▾"]}
+          activeItem="Dashboard"
+          themeStyles={themeStyles}
+          onNavigate={item => {
+            if (item === "Dashboard") navigate("/dashboard");
+            if (item === "My Courses") navigate("/my-courses");
+            if (item === "Home") navigate("/");
+          }}
+        />
       </div>
 
       {/* Page content */}
