@@ -60,7 +60,6 @@ function TADropdown({ themeStyles, navigate }) {
 
 const SIDEBAR_ITEMS = [
   { label: "User account", key: "user_account" },
-  { label: "Notifications", key: "notifications" },
   { label: "Badges", key: "badges" },
   { label: "Portfolios", key: "portfolios" },
   { label: "Blogs", key: "blogs" },
