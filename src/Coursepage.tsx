@@ -317,6 +317,7 @@ export default function CoursePage() {
   const { courseCode } = useParams<{ courseCode: string }>();
   const navigate = useNavigate();
   const { theme } = useTheme();
+  const { fontSize } = useFontSize();
 
   const [activeTab, setActiveTab] = useState("course");
   // All week IDs 0–20 expanded by default

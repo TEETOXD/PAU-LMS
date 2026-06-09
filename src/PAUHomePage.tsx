@@ -273,9 +273,9 @@ export default function PAUHomePage() {
           position:"absolute", top:"50%", right:"5%", transform:"translateY(-50%)",
           background:"rgba(0,0,0,0.41)",
           color:"white", padding:"2rem 2.5rem", borderRadius:0,
-          maxWidth:"28rem", textAlign:"center",
+          maxWidth:"53rem", textAlign:"right",
         }}>
-          <h1 style={{ margin:"0 0 0.75rem", fontSize:"1.625rem", fontWeight:"400", lineHeight:1.25 }}>
+          <h1 style={{ margin:"0 0 0.75rem", fontSize:"2.35rem", fontWeight:"400", lineHeight:1.25 }}>
             Welcome to PAU Learning Management System
           </h1>
           <p style={{ margin:"0 0 1.25rem", fontSize:"0.8125rem", lineHeight:1.6, color:"rgba(255,255,255,0.88)" }}>
@@ -283,7 +283,7 @@ export default function PAUHomePage() {
           </p>
           <button
             onClick={() => window.open("https://pau.edu.ng", "_blank")}
-            style={{ background:"#0E1664", color:"white", border:"none", borderRadius:"0.25rem", padding:"0.5rem 1.25rem", fontSize:"0.8125rem", fontWeight:"400", cursor:"pointer", fontFamily:"inherit" }}>
+            style={{ background:"#0E1664", color:"white", border:"none", borderRadius:"0.25rem", padding:"0.75rem 1.25rem", fontSize:"0.8125rem", fontWeight:"400", cursor:"pointer", fontFamily:"inherit" }}>
             Visit our Official Site
           </button>
         </div>

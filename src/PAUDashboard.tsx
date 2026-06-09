@@ -162,7 +162,7 @@ function CourseCard({ course, size = "normal", themeStyles, navigate }) {
         />
       </div>
       <div style={{ padding: "0.6rem 0.75rem 0.5rem" }}>
-        <div style={{ fontSize: "0.82rem", fontWeight: "600", color: themeStyles.primaryText, lineHeight: 1.3 }}>
+        <div style={{ fontSize: "0.82rem", fontWeight: "400", color: themeStyles.primaryText, lineHeight: 1.3 }}>
           {course.code} - {course.title}
         </div>
         <div style={{ fontSize: "0.75rem", color: themeStyles.secondaryText, marginTop: "0.2rem" }}>{course.semester}</div>
