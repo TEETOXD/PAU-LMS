@@ -126,7 +126,7 @@ function BellDropdown({ themeStyles, navigate }: { themeStyles: ThemeStyles; nav
               {i > 0 && <div style={{ height: "0.0625rem", background: themeStyles.border }} />}
               <div onClick={() => { if (n.action) { n.action(); setOpen(false); } }}
                 style={{ padding: "1rem 1.25rem", cursor: n.action ? "pointer" : "default" }}
-                onMouseEnter={e => { if (n.action) (e.currentTarget as HTMLDivElement).style.background = "#2A3A5E"; }}
+                onMouseEnter={e => { if (n.action) (e.currentTarget as HTMLDivElement).style.background = themeStyles.border; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background = "transparent"; }}>
                 <div style={{ fontWeight: "700", fontSize: "0.9375rem", color: themeStyles.primaryText, marginBottom: "0.3rem" }}>{n.title}</div>
                 <div style={{ fontSize: "0.875rem", color: themeStyles.secondaryText, lineHeight: 1.4 }}>{n.body}</div>
@@ -186,7 +186,7 @@ function TADropdown({ themeStyles, navigate }: { themeStyles: ThemeStyles; navig
               {group.map(item => (
                 <button key={item} onClick={() => handleItemClick(item)}
                   style={{ display: "block", width: "100%", textAlign: "left", padding: "0.75rem 1.25rem", border: "none", background: "none", cursor: "pointer", fontSize: "0.9375rem", color: themeStyles.primaryText, fontFamily: "inherit", transition: "background 0.12s" }}
-                  onMouseEnter={e => { e.currentTarget.style.background = "#2A3A5E"; e.currentTarget.style.color = themeStyles.primaryText; }}
+                  onMouseEnter={e => { e.currentTarget.style.background = themeStyles.border; e.currentTarget.style.color = themeStyles.primaryText; }}
                   onMouseLeave={e => { e.currentTarget.style.background = "none"; e.currentTarget.style.color = themeStyles.primaryText; }}>{item}</button>
               ))}
             </div>
@@ -442,7 +442,7 @@ export default function CoursePage() {
                 </div>
                 <span onClick={e => { e.stopPropagation(); handleCollapseAll(); }}
                   style={{ color: themeStyles.secondaryText, fontSize: "0.75rem", fontWeight: 500, cursor: "pointer", padding: "0.15rem 0.4rem", borderRadius: "0.2rem" }}
-                  onMouseEnter={e => (e.currentTarget.style.background = "#2A3A5E")}
+                  onMouseEnter={e => (e.currentTarget.style.background = themeStyles.border)}
                   onMouseLeave={e => (e.currentTarget.style.background = "transparent")}>
                   {collapseAllToggle ? "Expand all" : "Collapse all"}
                 </span>
